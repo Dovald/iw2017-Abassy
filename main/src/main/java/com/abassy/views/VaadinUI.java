@@ -1,4 +1,4 @@
-package com.abassy.views;
+/*package com.abassy.views;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -41,7 +41,7 @@ public class VaadinUI extends UI {
 		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
 		setContent(mainLayout);
 
-		grid.setWidth(1630, Unit.PIXELS);
+		grid.setWidth(1465, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
 		grid.setColumns("id", "firstName", "lastName");
 
@@ -80,3 +80,4 @@ public class VaadinUI extends UI {
 		}
 	}
 }
+*/
