@@ -14,25 +14,25 @@ import com.vaadin.ui.*;
 
 @SpringUI
 @Theme("valo")
-public class MesaCrud extends UI {
+public class PedidoCrud extends UI {
 	
 	private static final long serialVersionUID = 1L;
 	
 	//private final UserRepository repo; //hay que cambiarlo
 	//private final UserEditor editor; ////hay que cambiarlo
-	final Grid<Mesa> grid;
+	final Grid<Pedido> grid;
 	final TextField filter;
 	private final Button addNewBtn;
 
 	
 	@Autowired
 	//public CierreCajaCrud(UserRepository hay que cambiarlo repo, UserEditor hay que cambiarlo editor) {
-	public MesaCrud(){	
+	public PedidoCrud(){	
 		//this.repo = repo;
 		//this.editor = editor;
-		this.grid = new Grid<>(Mesa.class);
+		this.grid = new Grid<>(Pedido.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Añadir Mesa", FontAwesome.PLUS);
+		this.addNewBtn = new Button("Añadir Pedido", FontAwesome.PLUS);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class MesaCrud extends UI {
 
 		grid.setWidth(1465, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "zona", "numero", "pedidos");
+		grid.setColumns("id", "cliente", "local", "mesa", "usuario", "importe", "fecha", "lineaPedidos");
 
 		//filter.setPlaceholder("Filter by last name");
 
@@ -63,4 +63,5 @@ public class MesaCrud extends UI {
 	}
 	
 	
-}*/
+}
+*/

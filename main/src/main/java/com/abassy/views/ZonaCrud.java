@@ -1,4 +1,4 @@
-/*package com.abassy.views;
+package com.abassy.views;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -14,25 +14,25 @@ import com.vaadin.ui.*;
 
 @SpringUI
 @Theme("valo")
-public class MesaCrud extends UI {
+public class ZonaCrud extends UI {
 	
 	private static final long serialVersionUID = 1L;
 	
 	//private final UserRepository repo; //hay que cambiarlo
 	//private final UserEditor editor; ////hay que cambiarlo
-	final Grid<Mesa> grid;
+	final Grid<Zona> grid;
 	final TextField filter;
 	private final Button addNewBtn;
 
 	
 	@Autowired
 	//public CierreCajaCrud(UserRepository hay que cambiarlo repo, UserEditor hay que cambiarlo editor) {
-	public MesaCrud(){	
+	public ZonaCrud(){	
 		//this.repo = repo;
 		//this.editor = editor;
-		this.grid = new Grid<>(Mesa.class);
+		this.grid = new Grid<>(Zona.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Añadir Mesa", FontAwesome.PLUS);
+		this.addNewBtn = new Button("Añadir Zona", FontAwesome.PLUS);
 	}
 
 	@Override
@@ -45,14 +45,14 @@ public class MesaCrud extends UI {
 
 		grid.setWidth(1465, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "zona", "numero", "pedidos");
+		grid.setColumns("id", "local", "nombre", "mesas");
 
 		//filter.setPlaceholder("Filter by last name");
 
 		
 		
 	}
-
+/*
 	private void listCustomers(String filterText) {
 		if (StringUtils.isEmpty(filterText)) {
 			grid.setItems(repo.findAll());
@@ -61,6 +61,6 @@ public class MesaCrud extends UI {
 			grid.setItems(repo.findByLastNameStartsWithIgnoreCase(filterText));
 		}
 	}
+	*/
 	
-	
-}*/
+}
