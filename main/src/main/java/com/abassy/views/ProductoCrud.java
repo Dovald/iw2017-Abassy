@@ -1,21 +1,36 @@
-/*package com.abassy.views;
+package com.abassy.views;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import com.abassy.tables.*;
 
+import javax.annotation.PostConstruct;
+
+
+
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.UI;
+import com.vaadin.annotations.Theme;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
+import com.vaadin.spring.annotation.*;
 
-@SpringUI
-@Theme("valo")
-public class ProductoCrud extends UI {
-	
+@SpringView(name = ProductoCrud.VIEW_NAME)
+public class ProductoCrud extends VerticalLayout implements View {
+	public static final String VIEW_NAME = "Producto";
 	private static final long serialVersionUID = 1L;
 	
 	//private final UserRepository repo; //hay que cambiarlo
@@ -35,17 +50,17 @@ public class ProductoCrud extends UI {
 		this.addNewBtn = new Button("Añadir Producto", FontAwesome.PLUS);
 	}
 
-	@Override
-	protected void init(VaadinRequest request) {
+	@PostConstruct
+	protected void init() {
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		//VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
 		VerticalLayout mainLayout = new VerticalLayout(actions, grid);
-		setContent(mainLayout);
+		addComponent(mainLayout);
 
-		grid.setWidth(1465, Unit.PIXELS);
+		grid.setWidth(1000, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "familiaProducto", "nombre", "precio", "tipo", "imagen", "productoCompuestosForIdProducto", "lineaPedidos", "productoCompuestosForIdProducto");
+		grid.setColumns("imagen");
 
 		//filter.setPlaceholder("Filter by last name");
 
@@ -53,6 +68,12 @@ public class ProductoCrud extends UI {
 		
 	}
 
+	@Override
+	public void enter(ViewChangeEvent event) {
+		// TODO Auto-generated method stub
+
+	}
+	/*
 	private void listCustomers(String filterText) {
 		if (StringUtils.isEmpty(filterText)) {
 			grid.setItems(repo.findAll());
@@ -60,7 +81,7 @@ public class ProductoCrud extends UI {
 		else {
 			grid.setItems(repo.findByLastNameStartsWithIgnoreCase(filterText));
 		}
-	}
+	}*/
 	
 	
-}*/
+}

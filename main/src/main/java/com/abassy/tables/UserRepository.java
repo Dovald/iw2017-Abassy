@@ -1,9 +1,13 @@
 package com.abassy.tables;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import org.springframework.data.repository.CrudRepository;
+
+// This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
+// CRUD refers Create, Read, Update, Delete
+
+public interface UserRepository extends CrudRepository<User, Integer> {
 	
-	List<User> findByLastNameStartsWithIgnoreCase(String lastName);
+	List<User> findByNameStartsWithIgnoreCase(String name);
 }

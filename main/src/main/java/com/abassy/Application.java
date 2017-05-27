@@ -20,35 +20,35 @@ public class Application {
     }
     
     @Bean
-	public CommandLineRunner loadData(UserRepository repository) {
+	public CommandLineRunner loadData(LocalRepository repository) {
 		return (args) -> {
 			// save a couple of Users
-			repository.save(new User("Pepe", "Bauer"));
-			repository.save(new User("Chloe", "O'Brian"));
-			repository.save(new User("Kim", "Bauer"));
-			repository.save(new User("David", "Palmer"));
-			repository.save(new User("Michelle", "Dessler"));
+			repository.save(new Local("Santa Rosa", "San Fernando"));
+			repository.save(new Local("Calle Real", "Cadiz"));
+			repository.save(new Local("La Granja", "San Fernando"));
+			repository.save(new Local("Calle 4", "Jerez"));
+			repository.save(new Local("Candelaria", "Cadiz"));
 
 			// fetch all Users
-			log.info("Users found with findAll():");
+			log.info("Local found with findAll():");
 			log.info("-------------------------------");
-			for (User User : repository.findAll()) {
-				log.info(User.toString());
+			for (Local Local : repository.findAll()) {
+				log.info(Local.toString());
 			}
 			log.info("");
 
 			// fetch an individual User by ID
-			User User = repository.findOne(1L);
-			log.info("User found with findOne(1L):");
+			//Local Local = repository.findOne(1);
+			log.info("Local found with findOne(1L):");
 			log.info("--------------------------------");
-			log.info(User.toString());
+		//	log.info(Local.toString());
 			log.info("");
 
-			// fetch Users by last name
-			log.info("User found with findByLastNameStartsWithIgnoreCase('Bauer'):");
+			// fetch Local by last name
+			log.info("Local found with findByLastNameStartsWithIgnoreCase('Bauer'):");
 			log.info("--------------------------------------------");
-			for (User bauer : repository
-					.findByLastNameStartsWithIgnoreCase("Bauer")) {
+			for (Local bauer : repository
+					.findByDireccionStartsWithIgnoreCase("Bauer")) {
 				log.info(bauer.toString());
 			}
 			log.info("");

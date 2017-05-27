@@ -1,51 +1,66 @@
 package com.abassy.tables;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
 	
-	@Id
-	@GeneratedValue
-	private Long id;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Integer id;
 
-	private String firstName;
+    private String name;
 
-	private String lastName;
+    private String email;
+    
+    @OneToMany
+    private List<User> amigos;
+    
+    public User(){
+    }
+    
+    public User(String name, String email){
+    	this.name = name;
+    	this.email = email;
+    }
 
-	protected User() {
-	}
-
-	public User(String firstName, String lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
-
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public String getName() {
+		return name;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public String getEmail() {
+		return email;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("User[id=%d, firstName='%s', lastName='%s']", id,
-				firstName, lastName);
+	public void setEmail(String email) {
+		this.email = email;
 	}
+
+	public List<User> getAmigos() {
+		return amigos;
+	}
+
+	public void setAmigos(List<User> amigos) {
+		this.amigos = amigos;
+	}
+
+
 }
