@@ -1,9 +1,8 @@
 package com.abassy.tables;
 
-//import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
+//import org.springframework.data.repository.CrudRepository;
 
 public interface LocalRepository extends JpaRepository<Local, Long> {
-	List<Local> findByDireccionStartsWithIgnoreCase(String direccion);
+	public Local findByDireccionStartsWithIgnoreCase(String direccion);
 }

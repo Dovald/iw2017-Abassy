@@ -60,7 +60,7 @@ public class ProductoCrud extends VerticalLayout implements View {
 
 		grid.setWidth(1000, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("imagen");
+		grid.setColumns("id", "familiaProducto", "nombre", "precio", "tipo", "imagen", "productoCompuestosForIdProducto", "lineaPedidos", "productoCompuestosForIdProducto");
 
 		//filter.setPlaceholder("Filter by last name");
 

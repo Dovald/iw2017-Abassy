@@ -24,32 +24,33 @@ import com.vaadin.ui.themes.ValoTheme;
 @UIScope
 public class LocalEditor extends VerticalLayout {
 
-	private static final long serialVersionUID = -3086938115277081533L;
+	private static final long serialVersionUID = 1L;
 
 	private final LocalRepository repository;
-	
 	private final ZonaRepository repositoryzona;
 
 	private Local Local;
+	
+	Binder<Local> binder = new Binder<>(Local.class);
 
 	/* Fields to edit properties in Local entity */
-	Label titulo = new Label("Local");
+	Label titulo = new Label("Añadir Local");
 	TextField direccion = new TextField("Dirección");
 	TextField ciudad = new TextField("Ciudad");
 	NativeSelect<String> zona;
 
 	/* Action buttons */
-	Button save = new Button("Save", VaadinIcons.CHECK_CIRCLE);
-	Button cancel = new Button("Cancel", VaadinIcons.CLOSE_SMALL);
-	Button delete = new Button("Delete", VaadinIcons.TRASH);
+	Button save = new Button("Guardar", VaadinIcons.CHECK_CIRCLE);
+	Button cancel = new Button("Cancelar", VaadinIcons.CLOSE_SMALL);
+	Button delete = new Button("Eliminar", VaadinIcons.TRASH);
 	CssLayout actions = new CssLayout(save, cancel, delete);
-
-	Binder<Local> binder = new Binder<>(Local.class);
 
 	@Autowired
 	public LocalEditor(LocalRepository repository, ZonaRepository repositoryzona) {
+		
 		this.repository = repository;
-		this.repositoryzona=repositoryzona;
+		
+		this.repositoryzona = repositoryzona;
 		
 		//buscamos zonas
 		Collection<Zona> zonas = (Collection<Zona>) repositoryzona.findAll();
@@ -105,7 +106,7 @@ public class LocalEditor extends VerticalLayout {
 		// A hack to ensure the whole form is visible
 		save.focus();
 		// Select all text in firstName field automatically
-		direccion.selectAll();
+		//firstName.selectAll();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

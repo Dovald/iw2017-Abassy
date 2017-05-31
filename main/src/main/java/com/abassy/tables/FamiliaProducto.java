@@ -14,13 +14,17 @@ import javax.persistence.Table;
 @Table(name = "familia_producto", catalog = "abassy_db")
 public class FamiliaProducto implements java.io.Serializable {
 
-	private static final long serialVersionUID = -2616823112331705386L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private String nombre;
 	private List<Producto> productos;
 	
 	public FamiliaProducto() {
+	}
+	
+	public FamiliaProducto(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public FamiliaProducto(String nombre, List<Producto> productos) {

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Table(name = "zona", catalog = "abassy_db")
 public class Zona implements java.io.Serializable {
 
-	private static final long serialVersionUID = -6794207141672756033L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private Local local;

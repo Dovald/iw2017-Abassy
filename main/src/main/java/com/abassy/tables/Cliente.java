@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Table(name = "cliente", catalog = "abassy_db")
 public class Cliente implements java.io.Serializable {
 
-	private static final long serialVersionUID = 3350906854513999420L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private String nombre;

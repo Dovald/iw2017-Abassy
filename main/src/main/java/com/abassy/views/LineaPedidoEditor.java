@@ -1,5 +1,8 @@
 package com.abassy.views;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.abassy.tables.*;
@@ -12,38 +15,68 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+//@SuppressWarnings("serial")
 @SpringComponent
 @UIScope
 public class LineaPedidoEditor extends VerticalLayout {
 
-	private static final long serialVersionUID = -3086938115277081533L;
+	private static final long serialVersionUID = 1L;
 
-	private final ClienteRepository repository;
+	private final LineaPedidoRepository repository;
+	
+	private final PedidoRepository repositorypedido;
+	
+	private final ProductoRepository repositoryproducto;
 
-	private Cliente Cliente;
+	private LineaPedido LineaPedido;
 
 	/* Fields to edit properties in User entity */
-	Label titulo = new Label("Local");
-	TextField producto = new TextField("Producto");
+	Label titulo = new Label("Línea de Pedido");
+	
+	NativeSelect<String> pedido;
+	NativeSelect<String> producto;
 	TextField cantidad = new TextField("Cantidad");
+	//TextField hola = new TextField("Hola");
 
 	/* Action buttons */
-	Button save = new Button("Save", VaadinIcons.CHECK_CIRCLE);
-	Button cancel = new Button("Cancel", VaadinIcons.CLOSE_SMALL);
-	Button delete = new Button("Delete", VaadinIcons.TRASH);
+	Button save = new Button("Guardar", VaadinIcons.CHECK_CIRCLE);
+	Button cancel = new Button("Cancelar", VaadinIcons.CLOSE_SMALL);
+	Button delete = new Button("Eliminar", VaadinIcons.TRASH);
 	CssLayout actions = new CssLayout(save, cancel, delete);
 
-	Binder<Cliente> binder = new Binder<>(Cliente.class);
+	Binder<LineaPedido> binder = new Binder<>(LineaPedido.class);
 
 	@Autowired
-	public LineaPedidoEditor(ClienteRepository repository) {
+	public LineaPedidoEditor(LineaPedidoRepository repository, PedidoRepository repositoryped,
+			ProductoRepository repositoryprod) {
 		this.repository = repository;
-
-		addComponents(producto, cantidad, actions);
+		this.repositorypedido = repositoryped;
+		this.repositoryproducto = repositoryprod;
+		
+		Collection<Pedido> pedidos = (Collection<Pedido>) repositorypedido.findAll();
+		ArrayList<String> pedidoList = new ArrayList<String>();
+		for(Pedido p: pedidos){
+			System.out.println(p.getId());
+			pedidoList.add(p.getId().toString());
+		}
+		pedido = new NativeSelect<>("Selecciona pedido:", pedidoList);
+		pedido.setEmptySelectionAllowed(false);
+		
+		Collection<Producto> productos = (Collection<Producto>) repositoryproducto.findAll();
+		ArrayList<String> productoList = new ArrayList<String>();
+		for(Producto p: productos){
+			System.out.println(p.getNombre());
+			productoList.add(p.getNombre());
+		}
+		producto = new NativeSelect<>("Selecciona producto:", productoList);
+		producto.setEmptySelectionAllowed(false);
+		
+		addComponents(pedido, producto, cantidad, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
@@ -55,9 +88,9 @@ public class LineaPedidoEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> repository.save(Cliente));
-		delete.addClickListener(e -> repository.delete(Cliente));
-		cancel.addClickListener(e -> editCliente(Cliente));
+		save.addClickListener(e -> repository.save(LineaPedido));
+		delete.addClickListener(e -> repository.delete(LineaPedido));
+		cancel.addClickListener(e -> editLineaPedido(LineaPedido));
 		setVisible(false);
 	}
 
@@ -65,7 +98,7 @@ public class LineaPedidoEditor extends VerticalLayout {
 		void onChange();
 	}
 
-	public final void editCliente(Cliente c) {
+	public final void editLineaPedido(LineaPedido c) {
 		if (c == null) {
 			setVisible(false);
 			return;
@@ -73,14 +106,14 @@ public class LineaPedidoEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Cliente = repository.findOne(c.getId());
+			LineaPedido = repository.findOne(c.getId());
 		}
 		else {
-			Cliente = c;
+			LineaPedido = c;
 		}
 		cancel.setVisible(persisted);
 
-		binder.setBean(Cliente);
+		binder.setBean(LineaPedido);
 
 		setVisible(true);
 

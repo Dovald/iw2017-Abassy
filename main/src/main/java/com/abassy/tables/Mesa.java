@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Table(name = "mesa", catalog = "abassy_db")
 public class Mesa implements java.io.Serializable {
 
-	private static final long serialVersionUID = 7854162327860060384L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private Zona zona;

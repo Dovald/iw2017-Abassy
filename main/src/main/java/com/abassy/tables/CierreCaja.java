@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
 @Table(name = "cierre_caja", catalog = "abassy_db")
 public class CierreCaja implements java.io.Serializable {
 
-	private static final long serialVersionUID = 7603498124949768441L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private Local local;

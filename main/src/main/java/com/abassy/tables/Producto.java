@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "producto", catalog = "abassy_db")
 public class Producto implements java.io.Serializable {
 
-	private static final long serialVersionUID = -500120082346868169L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private FamiliaProducto familiaProducto;
@@ -29,7 +29,27 @@ public class Producto implements java.io.Serializable {
 
 	public Producto() {
 	}
+	
+	// Constructor de ingredientes:
+	public Producto(String nombre, Float precio) {
+		this.familiaProducto = new FamiliaProducto("Ingredientes");
+		this.nombre = nombre;
+		this.precio = precio;
+		this.tipo = false;
+		//this.imagen = imagen;
+		//this.productos = productos;
+	}
 
+	// Producto sin imagen
+	public Producto(FamiliaProducto familiaProducto, String nombre, Float precio, Boolean tipo,	List<Producto> productos) {
+		this.familiaProducto = familiaProducto;
+		this.nombre = nombre;
+		this.precio = precio;
+		this.tipo = tipo;
+		//this.imagen = imagen;
+		this.productos = productos;
+	}
+	
 	public Producto(FamiliaProducto familiaProducto, String nombre, Float precio, Boolean tipo, byte[] imagen,
 			List<Producto> productos) {
 		this.familiaProducto = familiaProducto;

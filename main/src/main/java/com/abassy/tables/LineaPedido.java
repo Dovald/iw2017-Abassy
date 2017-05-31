@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "linea_pedido", catalog = "abassy_db")
 public class LineaPedido implements java.io.Serializable {
 
-	private static final long serialVersionUID = -742717796275805485L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private Pedido pedido;

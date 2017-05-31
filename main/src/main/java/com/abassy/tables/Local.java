@@ -14,15 +14,15 @@ import javax.persistence.Table;
 @Table(name = "local", catalog = "abassy_db")
 public class Local implements java.io.Serializable {
 	
-	private static final long serialVersionUID = -891419064167559552L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private String direccion;
 	private String ciudad;
-	//private List<Pedido> pedidos;
+	private List<Pedido> pedidos;
 	private List<Zona> zonas;
-	//private List<CierreCaja> cierreCajas;
-	//private List<Usuario> usuarios;
+	private List<CierreCaja> cierreCajas;
+	private List<Usuario> usuarios;
 
 	public Local() {
 	}
@@ -31,7 +31,7 @@ public class Local implements java.io.Serializable {
 		this.direccion = direccion;
 		this.ciudad = ciudad;
 	}
-/*
+
 	public Local(String direccion, String ciudad, List<Pedido> pedidos, List<Zona> zonas, List<CierreCaja> cierreCajas,
 			List<Usuario> usuarios) {
 		this.direccion = direccion;
@@ -40,7 +40,7 @@ public class Local implements java.io.Serializable {
 		this.zonas = zonas;
 		this.cierreCajas = cierreCajas;
 		this.usuarios = usuarios;
-	}*/
+	}
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -69,7 +69,7 @@ public class Local implements java.io.Serializable {
 	public void setCiudad(String ciudad) {
 		this.ciudad = ciudad;
 	}
-/*
+
 	@OneToMany(fetch = FetchType.LAZY)
 	public List<Pedido> getPedidos() {
 		return this.pedidos;
@@ -77,7 +77,7 @@ public class Local implements java.io.Serializable {
 
 	public void setPedidos(List<Pedido> pedidos) {
 		this.pedidos = pedidos;
-	}*/
+	}
 
 	@OneToMany(fetch = FetchType.LAZY)
 	public List<Zona> getZonas() {
@@ -87,7 +87,7 @@ public class Local implements java.io.Serializable {
 	public void setZonas(List<Zona> zonas) {
 		this.zonas = zonas;
 	}
-/*
+
 	@OneToMany(fetch = FetchType.LAZY)
 	public List<CierreCaja> getCierreCajas() {
 		return this.cierreCajas;
@@ -95,8 +95,8 @@ public class Local implements java.io.Serializable {
 
 	public void setCierreCajas(List<CierreCaja> cierreCajas) {
 		this.cierreCajas = cierreCajas;
-	}*/
-/*
+	}
+
 	@OneToMany(fetch = FetchType.LAZY)
 	public List<Usuario> getUsuarios() {
 		return this.usuarios;
@@ -105,5 +105,5 @@ public class Local implements java.io.Serializable {
 	public void setUsuarios(List<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
-*/
+
 }

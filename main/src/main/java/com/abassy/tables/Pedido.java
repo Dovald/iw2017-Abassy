@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 @Table(name = "pedido", catalog = "abassy_db")
 public class Pedido implements java.io.Serializable {
 
-	private static final long serialVersionUID = -4580324044123703108L;
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private Cliente cliente;
@@ -31,6 +31,12 @@ public class Pedido implements java.io.Serializable {
 	private List<LineaPedido> lineaPedidos;
 
 	public Pedido() {
+	}
+	
+	public Pedido(Local local, Usuario usuario) {
+		this.local = local;
+		this.usuario = usuario;
+		this.fecha = new Date();
 	}
 
 	public Pedido(Cliente cliente, Local local, Usuario usuario, Float importe, Date fecha) {

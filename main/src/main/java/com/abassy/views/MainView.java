@@ -65,8 +65,11 @@ public class MainView extends UI implements ViewDisplay{
 
 import javax.annotation.PostConstruct;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
+import com.vaadin.server.Responsive;
+import com.vaadin.ui.Alignment;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringViewDisplay;
 import com.vaadin.ui.Button;
@@ -80,8 +83,6 @@ import com.vaadin.ui.themes.ValoTheme;
 //import com.abassy.views.LocalCrud;
 import com.abassy.views.*;
 
-
-
 /**
  * @author ruizrube
  *
@@ -89,6 +90,8 @@ import com.abassy.views.*;
 @SpringViewDisplay
 public class MainView extends VerticalLayout implements ViewDisplay {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Panel springViewDisplay;
 	
 	@Override
@@ -101,29 +104,34 @@ public class MainView extends VerticalLayout implements ViewDisplay {
 	void init() {
 
 		final VerticalLayout root = new VerticalLayout();
+		Responsive.makeResponsive(root);
 		root.setSizeFull();
 		
 		// Creamos la cabecera 
-		//root.addComponent(new Label("This is the session: " + VaadinSession.getCurrent()));
-		//root.addComponent(new Label("This is the UI: " + this.toString()));
+		Label tit = new Label("Abassy");
+		tit.setStyleName("h2");
+		root.addComponent(tit);
+		root.setComponentAlignment(tit, Alignment.TOP_LEFT);
 		
 		Button logoutButton = new Button("Logout", event -> logout());
-		logoutButton.setStyleName(ValoTheme.BUTTON_LINK);
-		//root.addComponent(logoutButton);
+		//logoutButton.setStyleName(ValoTheme.BUTTON_LINK);
+		logoutButton.setIcon(VaadinIcons.SIGN_OUT);
+		root.addComponent(logoutButton);
 
 		// Creamos la barra de navegación
 		final CssLayout navigationBar = new CssLayout();
 		navigationBar.addStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 		navigationBar.addComponent(createNavigationButton("Welcome", WelcomeView.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Local", LocalCrud.VIEW_NAME));
-		navigationBar.addComponent(createNavigationButton("Zona", ZonaCrud.VIEW_NAME));
+		//navigationBar.addComponent(createNavigationButton("Zona", ZonaCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Usuarios", UsuarioCrud.VIEW_NAME));
-		navigationBar.addComponent(createNavigationButton("Pedidos", PedidoCrud.VIEW_NAME));
-		navigationBar.addComponent(createNavigationButton("Clientes", ClienteCrud.VIEW_NAME));
-		navigationBar.addComponent(createNavigationButton("Productos", ProductoCrud.VIEW_NAME));
-		navigationBar.addComponent(createNavigationButton("Familia de Productos", FamiliaProductoCrud.VIEW_NAME));
-		navigationBar.addComponent(createNavigationButton("Cierre de Caja", CierreCajaCrud.VIEW_NAME));
-		navigationBar.addComponent(createNavigationButton("Mesa", MesaCrud.VIEW_NAME));
+		//navigationBar.addComponent(createNavigationButton("Pedidos", PedidoCrud.VIEW_NAME));
+		//navigationBar.addComponent(createNavigationButton("Línea de Pedidos", LineaPedidoCrud.VIEW_NAME));
+		//navigationBar.addComponent(createNavigationButton("Clientes", ClienteCrud.VIEW_NAME));
+		//navigationBar.addComponent(createNavigationButton("Productos", ProductoCrud.VIEW_NAME));
+		//navigationBar.addComponent(createNavigationButton("Familia de Productos", FamiliaProductoCrud.VIEW_NAME));
+		//navigationBar.addComponent(createNavigationButton("Cierre de Caja", CierreCajaCrud.VIEW_NAME));
+		//navigationBar.addComponent(createNavigationButton("Mesa", MesaCrud.VIEW_NAME));
 		//navigationBar.addComponent(createNavigationButton("User Management", UserManagementView.VIEW_NAME));
 		root.addComponent(navigationBar);
 

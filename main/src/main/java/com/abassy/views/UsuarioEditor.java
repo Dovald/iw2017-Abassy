@@ -16,19 +16,28 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+//import com.abassy.security.SecurityUtils;
+import com.abassy.services.*;
+
 @SpringComponent
 @UIScope
 public class UsuarioEditor extends VerticalLayout {
 
-	private static final long serialVersionUID = -3086938115277081533L;
+	private static final long serialVersionUID = 1L;
 
-	private final UsuarioRepository repository;
+	//private final UsuarioRepository repository;
+	
+	private final UsuarioService service;
 
 	private Usuario Usuario;
 
+	Binder<Usuario> binder = new Binder<>(Usuario.class);
+	
 	Label titulo = new Label("Usuario");
 	TextField nombre = new TextField("Nombre");
 	TextField apellidos = new TextField("Apellidos");
+	TextField username = new TextField("Username");
+	TextField password = new TextField("Password");
 
 	/* Action buttons */
 	Button save = new Button("Save", VaadinIcons.CHECK_CIRCLE);
@@ -36,13 +45,13 @@ public class UsuarioEditor extends VerticalLayout {
 	Button delete = new Button("Delete", VaadinIcons.TRASH);
 	CssLayout actions = new CssLayout(save, cancel, delete);
 
-	Binder<Usuario> binder = new Binder<>(Usuario.class);
+	
 
 	@Autowired
-	public UsuarioEditor(UsuarioRepository repository) {
-		this.repository = repository;
+	public UsuarioEditor(UsuarioService service) {
+		this.service = service;
 
-		addComponents(nombre, apellidos, actions);
+		addComponents(nombre, apellidos, username, password, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
@@ -54,10 +63,13 @@ public class UsuarioEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> repository.save(Usuario));
-		delete.addClickListener(e -> repository.delete(Usuario));
+		save.addClickListener(e -> service.save(Usuario));
+		delete.addClickListener(e -> service.delete(Usuario));
 		cancel.addClickListener(e -> editUsuario(Usuario));
 		setVisible(false);
+		
+		// Solo borra el admin
+		//delete.setEnabled(SecurityUtils.hasRole("ADMIN"));
 	}
 
 	public interface ChangeHandler {
@@ -72,7 +84,7 @@ public class UsuarioEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Usuario = repository.findOne(c.getId());
+			Usuario = service.findOne(c.getId());
 		}
 		else {
 			Usuario = c;
@@ -89,7 +101,7 @@ public class UsuarioEditor extends VerticalLayout {
 		// A hack to ensure the whole form is visible
 		save.focus();
 		// Select all text in firstName field automatically
-		//firstName.selectAll();
+		//nombre.selectAll();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

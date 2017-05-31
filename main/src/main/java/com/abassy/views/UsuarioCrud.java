@@ -1,15 +1,14 @@
 package com.abassy.views;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-
 import com.abassy.tables.*;
+import com.abassy.services.UsuarioService;
 
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -35,18 +34,16 @@ public class UsuarioCrud extends VerticalLayout implements View {
 	public static final String VIEW_NAME="Usuario";
 	private static final long serialVersionUID = 1L;
 	
-	private final UsuarioRepository repo; //hay que cambiarlo
-	private final UsuarioEditor editor; ////hay que cambiarlo
+	private final UsuarioService service;
+	private final UsuarioEditor editor;
 	final Grid<Usuario> grid;
 	final TextField filter;
 	private final Button addNewBtn;
 
 	
 	@Autowired
-	//public UsuarioCrud(UsuarioRepository repo, UsuarioEditor editor) {
-		public UsuarioCrud(UsuarioRepository repo, UsuarioEditor editor) {	
-	//public UsuarioCrud(){	
-		this.repo = repo;
+	public UsuarioCrud(UsuarioService service, UsuarioEditor editor) {	
+		this.service = service;
 		this.editor = editor;
 		this.grid = new Grid<>(Usuario.class);
 		this.filter = new TextField();
@@ -57,42 +54,39 @@ public class UsuarioCrud extends VerticalLayout implements View {
 	protected void init() {
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-		//VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
-		VerticalLayout mainLayout = new VerticalLayout(actions, grid);
+		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
 		addComponent(mainLayout);
 
 		grid.setWidth(1000, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
-		//grid.setColumns("id", "nombre", "apellidos");
-		grid.setColumns("id", "local", "tipo", "nombre", "apellidos", "password", "pedidos");
+		grid.setColumns("id", "nombre", "apellidos");
+		//grid.setColumns("id", "local", "tipo", "nombre", "apellidos", "password", "pedidos");
 
-		//filter.setPlaceholder("Filter by last name");
-
-		
+	
 		filter.setPlaceholder("Filter by last name");
 
 		// Hook logic to components
-		/*
+		
 		// Replace listing with filtered content when user changes filter
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
 		filter.addValueChangeListener(e -> listCustomers(e.getValue()));
 
 		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editUser(e.getValue());
+			editor.editUsuario(e.getValue());
 		});
 
 		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editUser(new Usuario("", "")));
+		addNewBtn.addClickListener(e -> editor.editUsuario(new Usuario("", "")));
 
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
 			editor.setVisible(false);
 			listCustomers(filter.getValue());
-		});*/
+		});
 
 		// Initialize listing
-		//listCustomers(null);
+		listCustomers(null);
 	}
 	
 	@Override
@@ -100,16 +94,16 @@ public class UsuarioCrud extends VerticalLayout implements View {
 		// TODO Auto-generated method stub
 
 	}
-/*
+
 	
 	private void listCustomers(String filterText) {
 		if (StringUtils.isEmpty(filterText)) {
-			grid.setItems((Collection<Usuario>) repo.findAll());
+			grid.setItems(service.findAll());
 		}
 		else {
-			grid.setItems(repo.findByApellidosStartsWithIgnoreCase(filterText));
+			grid.setItems(service.findByNombreStartsWithIgnoreCase(filterText));
 		}
 	}
-	*/
+	
 	
 }
