@@ -48,7 +48,7 @@ public class UsuarioCrud extends VerticalLayout implements View {
 
 		grid.setWidth(1000, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "nombre", "apellidos");
+		grid.setColumns("id", "nombre", "apellidos", "username", "local");
 		//grid.setColumns("id", "local", "tipo", "nombre", "apellidos", "password", "pedidos");
 
 	

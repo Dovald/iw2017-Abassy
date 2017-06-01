@@ -8,6 +8,7 @@ import com.abassy.services.ZonaService;
 import com.abassy.tables.Mesa;
 import com.abassy.tables.Zona;
 import com.vaadin.data.Binder;
+import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -30,7 +31,7 @@ public class MesaEditor extends VerticalLayout {
 	
 	private final ZonaService serviceZona;
 
-	private Mesa Mesa;
+	private Mesa mesa;
 	
 	Binder<Mesa> binder = new Binder<>(Mesa.class);
 
@@ -53,8 +54,16 @@ public class MesaEditor extends VerticalLayout {
 
 		addComponents(titulo, numero, zona, actions);
 
+		binder.forField(numero)
+		  .withNullRepresentation(Integer.toString(0))
+		  .withConverter(
+		    new StringToIntegerConverter("Debes introducir un número"))
+		  .bind(Mesa::getNumero, Mesa::setNumero);
+		
+		binder.forField(zona).bind(Mesa::getZona, Mesa::setZona);
+		
 		// bind using naming convention
-		binder.bindInstanceFields(this);
+		//binder.bindInstanceFields(this);
 
 		// Configure and style components
 		setSpacing(true);
@@ -63,22 +72,11 @@ public class MesaEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> service.save(Mesa));
-		delete.addClickListener(e -> service.delete(Mesa));
-		cancel.addClickListener(e -> editMesa(Mesa));
+		save.addClickListener(e -> service.save(mesa));
+		delete.addClickListener(e -> service.delete(mesa));
+		cancel.addClickListener(e -> editMesa(mesa));
 		
-		if(SecurityUtils.getUserLogin().getLocal()!= null)
-		{
-			zona.setItems(SecurityUtils.getUserLogin().getLocal().getZonas());
-		}
-		else
-		{
-			zona.setItems(serviceZona.findAll());
-		}
-		
-		/*numero.addValueChangeListener(e -> {
-			Mesa.setNumero(Integer.parseInt(numero.getValue()));
-		});*/
+		zona.setItems(serviceZona.findAll());
 		
 		setVisible(false);
 	}
@@ -95,14 +93,14 @@ public class MesaEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Mesa = service.findOne(c.getId());
+			mesa = service.findOne(c.getId());
 		}
 		else {
-			Mesa = c;
+			mesa = c;
 		}
 		cancel.setVisible(persisted);
 
-		binder.setBean(Mesa);
+		binder.setBean(mesa);
 
 		setVisible(true);
 

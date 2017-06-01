@@ -79,7 +79,7 @@ public class Local implements java.io.Serializable {
 		this.pedidos = pedidos;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	public List<Zona> getZonas() {
 		return this.zonas;
 	}

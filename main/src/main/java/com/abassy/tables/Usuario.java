@@ -86,7 +86,7 @@ public class Usuario implements java.io.Serializable, UserDetails {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_local", nullable = true)
 	public Local getLocal() {
 		return this.local;

@@ -2,10 +2,13 @@ package com.abassy.views;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.abassy.tables.*;
-
+//import com.abassy.security.SecurityUtils;
+import com.abassy.services.LocalService;
+import com.abassy.services.UsuarioService;
+import com.abassy.tables.Local;
+import com.abassy.tables.Usuario;
 import com.vaadin.data.Binder;
-import com.vaadin.data.converter.StringToFloatConverter;
+import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -17,9 +20,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import com.abassy.security.SecurityUtils;
-//import com.abassy.security.SecurityUtils;
-import com.abassy.services.*;
 
 @SpringComponent
 @UIScope
@@ -31,7 +31,7 @@ public class UsuarioEditor extends VerticalLayout {
 	
 	private final UsuarioService service;
 
-	private Usuario Usuario;
+	private Usuario usuario;
 
 	Binder<Usuario> binder = new Binder<>(Usuario.class);
 	
@@ -73,9 +73,9 @@ public class UsuarioEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> service.save(Usuario));
-		delete.addClickListener(e -> service.delete(Usuario));
-		cancel.addClickListener(e -> editUsuario(Usuario));
+		save.addClickListener(e -> service.save(usuario));
+		delete.addClickListener(e -> service.delete(usuario));
+		cancel.addClickListener(e -> editUsuario(usuario));
 		setVisible(false);
 		
 		/*tipo.addSelectionListener(e -> {
@@ -108,17 +108,17 @@ public class UsuarioEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Usuario = service.findOne(c.getId());
+			usuario = service.findOne(c.getId());
 		}
 		else {
-			Usuario = c;
+			usuario = c;
 		}
 		cancel.setVisible(persisted);
 
 		// Bind User properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		binder.setBean(Usuario);
+		binder.setBean(usuario);
 
 		setVisible(true);
 

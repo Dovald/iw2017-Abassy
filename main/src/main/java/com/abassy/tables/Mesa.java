@@ -78,8 +78,6 @@ public class Mesa implements java.io.Serializable {
 	
 	@Override
 	public String toString() {
-		//return Integer.format("Mesa[id=%d, numero= %d]", id, numero);
-		//return Integer.valueOf(numero);
 		return Integer.toString(numero);
 	}
 

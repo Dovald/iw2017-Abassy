@@ -85,7 +85,7 @@ public class MesaCrud extends VerticalLayout implements View {
 			grid.setItems(service.findAll());
 		}
 		else {
-			grid.setItems(service.findByNumero(filterText));
+			grid.setItems(service.findByNumero(Integer.parseInt(filterText)));
 		}
 	}
 }
