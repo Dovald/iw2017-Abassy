@@ -8,8 +8,8 @@ import com.abassy.tables.Local;
 
 public interface CierreCajaServiceInt 
 {
-	public float cerrarcaja(Local local);
-	public void cerrarcajafinal(Local local, float importe, float importe_real);
+	public Float cerrarcaja(Local local);
+	public void cerrarcajafinal(Local local, Float importe, CierreCaja cierre);
 	public void save(CierreCaja cierrecaja);
 	public CierreCaja findByFecha(Date fecha);
 	public List<CierreCaja> findAll();

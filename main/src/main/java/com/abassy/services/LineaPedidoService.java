@@ -3,6 +3,7 @@ package com.abassy.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.abassy.tables.LineaPedido;
@@ -10,6 +11,7 @@ import com.abassy.tables.LineaPedidoRepository;
 import com.abassy.tables.Pedido;
 import com.abassy.tables.Producto;
 
+@Service
 public class LineaPedidoService implements LineaPedidoServiceInt
 {
 	@Autowired

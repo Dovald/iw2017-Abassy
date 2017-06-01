@@ -24,6 +24,13 @@ public class Cliente implements java.io.Serializable {
 
 	public Cliente() {
 	}
+	
+	public Cliente(String nombre, String direccion, String telefono) { //, List<Pedido> pedidos) {
+		this.nombre = nombre;
+		this.direccion = direccion;
+		this.telefono = telefono;
+		//this.pedidos = pedidos;
+	}
 
 	public Cliente(String nombre, String direccion, String telefono, List<Pedido> pedidos) {
 		this.nombre = nombre;

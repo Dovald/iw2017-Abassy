@@ -25,6 +25,11 @@ public class Mesa implements java.io.Serializable {
 
 	public Mesa() {
 	}
+	
+	public Mesa(Zona zona, Integer numero) {
+		this.zona = zona;
+		this.numero = numero;
+	}
 
 	public Mesa(Zona zona, Integer numero, List<Pedido> pedidos) {
 		this.zona = zona;
@@ -44,7 +49,7 @@ public class Mesa implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_zona")
 	public Zona getZona() {
 		return this.zona;
@@ -69,6 +74,13 @@ public class Mesa implements java.io.Serializable {
 
 	public void setPedidos(List<Pedido> pedidos) {
 		this.pedidos = pedidos;
+	}
+	
+	@Override
+	public String toString() {
+		//return Integer.format("Mesa[id=%d, numero= %d]", id, numero);
+		//return Integer.valueOf(numero);
+		return Integer.toString(numero);
 	}
 
 }

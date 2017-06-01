@@ -1,15 +1,20 @@
 package com.abassy.views;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.abassy.tables.*;
-
+import com.abassy.services.LocalService;
+import com.abassy.services.ZonaService;
+import com.abassy.tables.Local;
+import com.abassy.tables.Zona;
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -22,27 +27,31 @@ public class ZonaEditor extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private final ZonaRepository repository;
+	private final ZonaService service;
+	
+	private final LocalService servicelocal;
 
 	private Zona Zona;
+	
+	Binder<Zona> binder = new Binder<>(Zona.class);
 
 	/* Fields to edit properties in User entity */
 	Label titulo = new Label("Zona");
 	TextField nombre = new TextField("Nombre");
+	ComboBox<Local> local = new ComboBox<>("Local");
 
 	/* Action buttons */
-	Button save = new Button("Save", VaadinIcons.CHECK_CIRCLE);
-	Button cancel = new Button("Cancel", VaadinIcons.CLOSE_SMALL);
-	Button delete = new Button("Delete", VaadinIcons.TRASH);
+	Button save = new Button("Guardar", VaadinIcons.CHECK_CIRCLE);
+	Button cancel = new Button("Cancelar", VaadinIcons.CLOSE_SMALL);
+	Button delete = new Button("Eliminar", VaadinIcons.TRASH);
 	CssLayout actions = new CssLayout(save, cancel, delete);
 
-	Binder<Zona> binder = new Binder<>(Zona.class);
-
 	@Autowired
-	public ZonaEditor(ZonaRepository repository) {
-		this.repository = repository;
+	public ZonaEditor(ZonaService service, LocalService servicelocal) {
+		this.service = service;
+		this.servicelocal = servicelocal;
 
-		addComponents(nombre, actions);
+		addComponents(nombre,local, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
@@ -54,10 +63,11 @@ public class ZonaEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> repository.save(Zona));
-		delete.addClickListener(e -> repository.delete(Zona));
+		save.addClickListener(e -> service.save(Zona));
+		delete.addClickListener(e -> service.delete(Zona));
 		cancel.addClickListener(e -> editZona(Zona));
 		setVisible(false);
+		local.setItems(servicelocal.findAll());
 	}
 
 	public interface ChangeHandler {
@@ -72,7 +82,7 @@ public class ZonaEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Zona = repository.findOne(c.getId());
+			Zona = service.findOne(c.getId());
 		}
 		else {
 			Zona = c;

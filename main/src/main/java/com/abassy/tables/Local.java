@@ -105,5 +105,10 @@ public class Local implements java.io.Serializable {
 	public void setUsuarios(List<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s (%s)", direccion, ciudad);
+	}
 
 }

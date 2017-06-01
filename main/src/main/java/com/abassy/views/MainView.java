@@ -123,15 +123,15 @@ public class MainView extends VerticalLayout implements ViewDisplay {
 		navigationBar.addStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 		navigationBar.addComponent(createNavigationButton("Welcome", WelcomeView.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Local", LocalCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("Zona", ZonaCrud.VIEW_NAME));
+		navigationBar.addComponent(createNavigationButton("Zona", ZonaCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Usuarios", UsuarioCrud.VIEW_NAME));
 		//navigationBar.addComponent(createNavigationButton("Pedidos", PedidoCrud.VIEW_NAME));
 		//navigationBar.addComponent(createNavigationButton("Línea de Pedidos", LineaPedidoCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("Clientes", ClienteCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("Productos", ProductoCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("Familia de Productos", FamiliaProductoCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("Cierre de Caja", CierreCajaCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("Mesa", MesaCrud.VIEW_NAME));
+		navigationBar.addComponent(createNavigationButton("Clientes", ClienteCrud.VIEW_NAME));
+		navigationBar.addComponent(createNavigationButton("Productos", ProductoCrud.VIEW_NAME));
+		navigationBar.addComponent(createNavigationButton("Familia de Productos", FamiliaProductoCrud.VIEW_NAME));
+		navigationBar.addComponent(createNavigationButton("Mesa", MesaCrud.VIEW_NAME));
+		navigationBar.addComponent(createNavigationButton("Cierre de Caja", CierreCajaCrud.VIEW_NAME));
 		//navigationBar.addComponent(createNavigationButton("User Management", UserManagementView.VIEW_NAME));
 		root.addComponent(navigationBar);
 

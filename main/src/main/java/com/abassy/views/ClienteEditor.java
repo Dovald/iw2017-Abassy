@@ -2,8 +2,8 @@ package com.abassy.views;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.abassy.tables.*;
-
+import com.abassy.services.ClienteService;
+import com.abassy.tables.Cliente;
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
@@ -22,30 +22,29 @@ public class ClienteEditor extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private final ClienteRepository repository;
+	private final ClienteService service;
 
 	private Cliente Cliente;
 
 	/* Fields to edit properties in User entity */
-	Label titulo = new Label("Local");
+	Label titulo = new Label("Nuevo Cliente");
 	TextField nombre = new TextField("Nombre");
-	TextField apellidos = new TextField("Apellidos");
 	TextField direccion = new TextField("Dirección");
 	TextField telefono = new TextField("Teléfono");
 
 	/* Action buttons */
-	Button save = new Button("Save", VaadinIcons.CHECK_CIRCLE);
-	Button cancel = new Button("Cancel", VaadinIcons.CLOSE_SMALL);
-	Button delete = new Button("Delete", VaadinIcons.TRASH);
+	Button save = new Button("Guardar", VaadinIcons.CHECK_CIRCLE);
+	Button cancel = new Button("Cancelar", VaadinIcons.CLOSE_SMALL);
+	Button delete = new Button("Eliminar", VaadinIcons.TRASH);
 	CssLayout actions = new CssLayout(save, cancel, delete);
 
 	Binder<Cliente> binder = new Binder<>(Cliente.class);
 
 	@Autowired
-	public ClienteEditor(ClienteRepository repository) {
-		this.repository = repository;
+	public ClienteEditor(ClienteService service) {
+		this.service = service;
 
-		addComponents(nombre, apellidos, direccion, telefono, actions);
+		addComponents(titulo, nombre, direccion, telefono, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
@@ -57,8 +56,8 @@ public class ClienteEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> repository.save(Cliente));
-		delete.addClickListener(e -> repository.delete(Cliente));
+		save.addClickListener(e -> service.save(Cliente));
+		delete.addClickListener(e -> service.delete(Cliente));
 		cancel.addClickListener(e -> editCliente(Cliente));
 		setVisible(false);
 	}
@@ -75,7 +74,7 @@ public class ClienteEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Cliente = repository.findOne(c.getId());
+			Cliente = service.findOne(c.getId());
 		}
 		else {
 			Cliente = c;

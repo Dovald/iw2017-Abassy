@@ -3,6 +3,7 @@ package com.abassy.views;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.abassy.tables.*;
+import com.abassy.services.FamiliaProductoService;
 
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction;
@@ -22,7 +23,7 @@ public class FamiliaProductoEditor extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private final FamiliaProductoRepository repository;
+	private final FamiliaProductoService service;
 
 	private FamiliaProducto FamiliaProducto;
 
@@ -31,16 +32,16 @@ public class FamiliaProductoEditor extends VerticalLayout {
 	TextField nombre = new TextField("Nombre");
 
 	/* Action buttons */
-	Button save = new Button("Save", VaadinIcons.CHECK_CIRCLE);
-	Button cancel = new Button("Cancel", VaadinIcons.CLOSE_SMALL);
-	Button delete = new Button("Delete", VaadinIcons.TRASH);
+	Button save = new Button("Guardar", VaadinIcons.CHECK_CIRCLE);
+	Button cancel = new Button("Cancelar", VaadinIcons.CLOSE_SMALL);
+	Button delete = new Button("Eliminar", VaadinIcons.TRASH);
 	CssLayout actions = new CssLayout(save, cancel, delete);
 
 	Binder<FamiliaProducto> binder = new Binder<>(FamiliaProducto.class);
 
 	@Autowired
-	public FamiliaProductoEditor(FamiliaProductoRepository repository) {
-		this.repository = repository;
+	public FamiliaProductoEditor(FamiliaProductoService service) {
+		this.service = service;
 
 		addComponents(nombre, actions);
 
@@ -54,8 +55,8 @@ public class FamiliaProductoEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> repository.save(FamiliaProducto));
-		delete.addClickListener(e -> repository.delete(FamiliaProducto));
+		save.addClickListener(e -> service.save(FamiliaProducto));
+		delete.addClickListener(e -> service.delete(FamiliaProducto));
 		cancel.addClickListener(e -> editFamiliaProducto(FamiliaProducto));
 		setVisible(false);
 	}
@@ -72,7 +73,7 @@ public class FamiliaProductoEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			FamiliaProducto = repository.findOne(c.getId());
+			FamiliaProducto = service.findOne(c.getId());
 		}
 		else {
 			FamiliaProducto = c;

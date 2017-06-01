@@ -55,7 +55,14 @@ public class Usuario implements java.io.Serializable, UserDetails {
 	public Usuario(String nombre, String apellidos) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
-		this.username = nombre;	
+		this.username = nombre;
+	}
+	
+	public Usuario(String nombre, String apellidos, int tipo) {
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.username = nombre;
+		this.tipo = tipo;
 	}
 
 	public Usuario(Local local, int tipo, String nombre, String apellidos, String password, List<Pedido> pedidos) {
@@ -80,7 +87,7 @@ public class Usuario implements java.io.Serializable, UserDetails {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_local", nullable = false)
+	@JoinColumn(name = "id_local", nullable = true)
 	public Local getLocal() {
 		return this.local;
 	}

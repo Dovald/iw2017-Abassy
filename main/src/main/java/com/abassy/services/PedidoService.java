@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.abassy.tables.Local;
 import com.abassy.tables.Pedido;
 import com.abassy.tables.PedidoRepository;
 
+@Service
 public class PedidoService implements PedidoServiceInt
 {
 	@Autowired

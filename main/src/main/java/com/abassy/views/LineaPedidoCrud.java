@@ -5,17 +5,19 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-import com.abassy.tables.*;
-
-import com.vaadin.icons.VaadinIcons;
+import com.abassy.services.LineaPedidoService;
+import com.abassy.tables.LineaPedido;
 import com.vaadin.annotations.Theme;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.ValueChangeMode;
-import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 //@SuppressWarnings("serial")
 @SpringView(name=LineaPedidoCrud.VIEW_NAME)
@@ -24,7 +26,7 @@ public class LineaPedidoCrud extends VerticalLayout implements View {
 	public static final String VIEW_NAME="LineaPedido";
 	private static final long serialVersionUID = 1L;
 	
-	private final LineaPedidoRepository repo; // Debe ser un servicio
+	private final LineaPedidoService service;
 	private final LineaPedidoEditor editor;
 	final Grid<LineaPedido> grid;
 	final TextField filter;
@@ -32,9 +34,8 @@ public class LineaPedidoCrud extends VerticalLayout implements View {
 
 	
 	@Autowired
-	public LineaPedidoCrud(LineaPedidoRepository repo, LineaPedidoEditor editor) {
-	//public LineaPedidoCrud(){	
-		this.repo = repo;
+	public LineaPedidoCrud(LineaPedidoService service, LineaPedidoEditor editor) {
+		this.service = service;
 		this.editor = editor;
 		this.grid = new Grid<>(LineaPedido.class);
 		this.filter = new TextField();
@@ -73,21 +74,19 @@ public class LineaPedidoCrud extends VerticalLayout implements View {
 			editor.setVisible(false);
 			listCustomers(filter.getValue());
 		});
-
 		
 		listCustomers(null);
 
-		
-		
 	}
 
 	private void listCustomers(String filterText) {
 		if (StringUtils.isEmpty(filterText)) {
-			grid.setItems(repo.findAll());
+			grid.setItems(service.findAll());
 		}
-		/*else {
-			grid.setItems(repo.findByPedido(filterText));
-		}*/
+		else {
+			
+			//grid.setItems(service.findByPedido());
+		}
 	}
 	
 	@Override

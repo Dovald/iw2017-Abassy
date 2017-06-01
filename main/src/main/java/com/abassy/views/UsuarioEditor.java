@@ -5,17 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.abassy.tables.*;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.converter.StringToFloatConverter;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-
+import com.abassy.security.SecurityUtils;
 //import com.abassy.security.SecurityUtils;
 import com.abassy.services.*;
 
@@ -25,7 +27,7 @@ public class UsuarioEditor extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	//private final UsuarioRepository repository;
+	private final LocalService serviceLocal;
 	
 	private final UsuarioService service;
 
@@ -38,21 +40,29 @@ public class UsuarioEditor extends VerticalLayout {
 	TextField apellidos = new TextField("Apellidos");
 	TextField username = new TextField("Username");
 	TextField password = new TextField("Password");
-
+	ComboBox<Integer> tipo = new ComboBox<>("Autoridad");
+	ComboBox<Local> local = new ComboBox<>("Local");
 	/* Action buttons */
 	Button save = new Button("Save", VaadinIcons.CHECK_CIRCLE);
 	Button cancel = new Button("Cancel", VaadinIcons.CLOSE_SMALL);
 	Button delete = new Button("Delete", VaadinIcons.TRASH);
 	CssLayout actions = new CssLayout(save, cancel, delete);
-
 	
 
 	@Autowired
-	public UsuarioEditor(UsuarioService service) {
+	public UsuarioEditor(UsuarioService service, LocalService serviceLocal) {
 		this.service = service;
+		this.serviceLocal = serviceLocal;
+		
+		tipo.setItems(0, 1, 2);
+		local.setItems(serviceLocal.findAll());
 
-		addComponents(nombre, apellidos, username, password, actions);
+		addComponents(nombre, apellidos, username, password, tipo, local, actions);
 
+		/*binder.forField(importe_real)
+		  .withConverter(
+		    new StringToFloatConverter("Debes introducir un número"))
+		  .bind(CierreCaja::getImporte_real, CierreCaja::setImporte_real);*/
 		// bind using naming convention
 		binder.bindInstanceFields(this);
 
@@ -67,6 +77,20 @@ public class UsuarioEditor extends VerticalLayout {
 		delete.addClickListener(e -> service.delete(Usuario));
 		cancel.addClickListener(e -> editUsuario(Usuario));
 		setVisible(false);
+		
+		/*tipo.addSelectionListener(e -> {
+			if(tipo.getValue().equals("GERENTE")){
+				Usuario.setTipo(0);
+			}
+			else{ 
+				if(tipo.getValue().equals("ENCARGADO")){
+					Usuario.setTipo(1);
+				}
+				else{
+					Usuario.setTipo(2);
+				}
+			}
+		});*/
 		
 		// Solo borra el admin
 		//delete.setEnabled(SecurityUtils.hasRole("ADMIN"));

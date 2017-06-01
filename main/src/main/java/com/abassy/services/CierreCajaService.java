@@ -22,32 +22,36 @@ public class CierreCajaService implements CierreCajaServiceInt{
 	private CierreCajaRepository repositoryCaja;
 
 	@Override
-	public float cerrarcaja(Local local) {
-		
-		List<CierreCaja> cierres = repositoryCaja.findAll();
-		Date lastdate = cierres.get(1).getFecha();
-		
-		for(CierreCaja cierre : cierres)
-		{
-			if(cierre.getFecha().after(lastdate)) lastdate = cierre.getFecha();
-		}
-		
-		List<Pedido> pedidos = repository.findByLocalAndFechaAfter(local,lastdate);
-		float importe = 0;
-		
-		for(Pedido pedido : pedidos)
-		{
-			importe += pedido.getImporte();
-		}
-		
-		return importe;
-	}
+	 public Float cerrarcaja(Local local) {
+	  
+		  List<CierreCaja> cierres = repositoryCaja.findAll();
+		  Date lastdate = new Date(10);
+		  if(!cierres.isEmpty())
+		  {   
+		   for(CierreCaja cierre : cierres)
+		   {
+		    if(cierre.getFecha().after(lastdate)) lastdate = cierre.getFecha();
+		   }   
+		  }
+		  
+		  List<Pedido> pedidos = repository.findByLocalAndFechaAfter(local,lastdate);
+		  float importe = 0;
+		  
+		  for(Pedido pedido : pedidos)
+		  {
+		   importe += pedido.getImporte();
+		  }
+		  return importe;
+	 }
 	
 	@Override
-	public void cerrarcajafinal(Local local, float importe, float importe_real)
+	public void cerrarcajafinal(Local local, Float importe, CierreCaja cierre)
 	{
 		Date date = Calendar.getInstance().getTime();
-		repositoryCaja.save(new CierreCaja(local, importe, importe_real, date));
+		cierre.setLocal(local);
+		cierre.setImporte(importe);
+		cierre.setFecha(date);
+		repositoryCaja.save(cierre);
 	}
 	
 	@Override

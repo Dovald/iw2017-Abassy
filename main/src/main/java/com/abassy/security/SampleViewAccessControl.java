@@ -15,21 +15,26 @@ public class SampleViewAccessControl implements ViewAccessControl {
     	
     	System.out.println("COMPROBANDO " + beanName + " PARA USUARIO CON ROLES: "+SecurityUtils.roles());
 
-    	if(beanName.equals(PedidoCrud.VIEW_NAME)) {
-    		return true;
-    	} else if(SecurityUtils.hasRole("GERENTE")){
-    		return true;
-    	} else if (beanName.equals(ClienteCrud.VIEW_NAME)) {
-    		return SecurityUtils.hasRole("CAMARERO") || SecurityUtils.hasRole("ENCARGADO");
-        } else if (beanName.equals(UsuarioCrud.VIEW_NAME)) {
-        	return SecurityUtils.hasRole("ENCARGADO");
-        } else if (beanName.equals(LocalCrud.VIEW_NAME)) {
-        	return SecurityUtils.hasRole("ENCARGADO");
-        } else if (beanName.equals("welcomeView")) {
+    	if (beanName.equals("welcomeView")) {
             return true;
-        } else {
-        	return false;
         }
+    	if(SecurityUtils.roles() != null)
+	    	switch(SecurityUtils.roles().toString()){
+		    	case "GERENTE":
+		    		if (beanName.equals("cierreCajaCrud")) return false;
+		    		else return true;
+		    	case "ENCARGADO":
+		    		if(beanName.equals("usuarioCrud") || beanName.equals("localCrud") ||
+		    				beanName.equals("productoCrud") || beanName.equals("familiaProductoCrud")) return false;
+		    		else return true;
+		    	case "CAMARERO":
+		    		if(beanName.equals("usuarioCrud") || beanName.equals("localCrud") || beanName.equals("cierreCajaCrud") || 
+		    				beanName.equals("productoCrud") || beanName.equals("familiaProductoCrud")) return false;
+		    		else return true;
+		    	default:
+		    		return true;
+	    	}
+    	else return false;
     }
 }
 

@@ -1,12 +1,9 @@
 package com.abassy.views;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.abassy.tables.*;
-
+import com.abassy.services.LocalService;
+import com.abassy.tables.Local;
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
@@ -15,7 +12,6 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -26,8 +22,7 @@ public class LocalEditor extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private final LocalRepository repository;
-	private final ZonaRepository repositoryzona;
+	private final LocalService service;
 
 	private Local Local;
 	
@@ -37,7 +32,6 @@ public class LocalEditor extends VerticalLayout {
 	Label titulo = new Label("Añadir Local");
 	TextField direccion = new TextField("Dirección");
 	TextField ciudad = new TextField("Ciudad");
-	NativeSelect<String> zona;
 
 	/* Action buttons */
 	Button save = new Button("Guardar", VaadinIcons.CHECK_CIRCLE);
@@ -46,23 +40,21 @@ public class LocalEditor extends VerticalLayout {
 	CssLayout actions = new CssLayout(save, cancel, delete);
 
 	@Autowired
-	public LocalEditor(LocalRepository repository, ZonaRepository repositoryzona) {
+	public LocalEditor(LocalService service) {
 		
-		this.repository = repository;
-		
-		this.repositoryzona = repositoryzona;
+		this.service = service;
 		
 		//buscamos zonas
-		Collection<Zona> zonas = (Collection<Zona>) repositoryzona.findAll();
+		/*Collection<Zona> zonas = (Collection<Zona>) repositoryzona.findAll();
 		ArrayList<String> zonaList = new ArrayList<String>();
 		for(Zona z: zonas){
 			System.out.println(z.getNombre());
 			zonaList.add(z.getNombre());
 		}
 		zona = new NativeSelect<>("Selecciona zona:", zonaList);
-		zona.setEmptySelectionAllowed(false);
+		zona.setEmptySelectionAllowed(false);*/
 		
-		addComponents(direccion, ciudad, zona, actions);
+		addComponents(direccion, ciudad, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
@@ -74,8 +66,8 @@ public class LocalEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> repository.save(Local));
-		delete.addClickListener(e -> repository.delete(Local));
+		save.addClickListener(e -> service.save(Local));
+		delete.addClickListener(e -> service.delete(Local));
 		cancel.addClickListener(e -> editLocal(Local));
 		setVisible(false);
 	}
@@ -92,7 +84,7 @@ public class LocalEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Local = repository.findOne(c.getId());
+			Local = service.findOne(c.getId());
 		}
 		else {
 			Local = c;

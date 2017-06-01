@@ -60,15 +60,15 @@ public class Application {
 	public CommandLineRunner loadData(UsuarioService service) {
 		return (args) -> {
 			// Local de prueba
-			/*Local pruebaLocal = new Local("Erg", "Budapest");
-			repoEst.save(pruebaLocal);
+			//Zona pruebaZona = new Zona("Erg", "Budapest");
+			//repoEst.save(pruebaLocal);
 			
-			Usuario root = new Usuario(pruebaLocal, "camarero", "toor", 2);
-			root.setPassword("camarero");
-			service.save(root);
+			/*Usuario root = new Usuario("root", "toor", 0);
+			root.setPassword("root");
+			service.save(root);*/
 			
 			// Pedido de prueba
-			Pedido prueba = new Pedido (pruebaLocal, root);
+			/*Pedido prueba = new Pedido (pruebaLocal, root);
 			repoPedido.save(prueba);
 			
 			// Familia Productos de prueba

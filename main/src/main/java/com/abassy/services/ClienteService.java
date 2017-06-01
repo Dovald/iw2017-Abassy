@@ -3,10 +3,12 @@ package com.abassy.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.abassy.tables.Cliente;
 import com.abassy.tables.ClienteRepository;
 
+@Service
 public class ClienteService implements ClienteServiceInt
 {
 	@Autowired

@@ -7,6 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.abassy.tables.Usuario;
+
 public final class SecurityUtils {
 
     private SecurityUtils() {
@@ -21,6 +23,12 @@ public final class SecurityUtils {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && authentication.getAuthorities().contains(new SimpleGrantedAuthority(role));
     }
+    
+    public static Usuario getUserLogin(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Usuario user = (Usuario)authentication.getPrincipal();
+        return user;
+      }
     
     public static Collection<? extends GrantedAuthority> roles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

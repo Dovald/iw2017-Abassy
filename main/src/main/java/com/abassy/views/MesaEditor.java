@@ -2,14 +2,18 @@ package com.abassy.views;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.abassy.tables.*;
-
+import com.abassy.security.SecurityUtils;
+import com.abassy.services.MesaService;
+import com.abassy.services.ZonaService;
+import com.abassy.tables.Mesa;
+import com.abassy.tables.Zona;
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -22,27 +26,32 @@ public class MesaEditor extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private final MesaRepository repository;
+	private final MesaService service;
+	
+	private final ZonaService serviceZona;
 
 	private Mesa Mesa;
-
-	/* Fields to edit properties in User entity */
-	Label titulo = new Label("Mesa");
-	TextField numero = new TextField("Nº Mesa");
-
-	/* Action buttons */
-	Button save = new Button("Save", VaadinIcons.CHECK_CIRCLE);
-	Button cancel = new Button("Cancel", VaadinIcons.CLOSE_SMALL);
-	Button delete = new Button("Delete", VaadinIcons.TRASH);
-	CssLayout actions = new CssLayout(save, cancel, delete);
-
+	
 	Binder<Mesa> binder = new Binder<>(Mesa.class);
 
-	@Autowired
-	public MesaEditor(MesaRepository repository) {
-		this.repository = repository;
+	/* Fields to edit properties in User entity */
+	Label titulo = new Label("Nueva Mesa");
+	TextField numero = new TextField("Nº Mesa");
+	ComboBox<Zona> zona = new ComboBox<>("Zona"); 
 
-		addComponents(numero, actions);
+	/* Action buttons */
+	Button save = new Button("Guardar", VaadinIcons.CHECK_CIRCLE);
+	Button cancel = new Button("Cancelar", VaadinIcons.CLOSE_SMALL);
+	Button delete = new Button("Eliminar", VaadinIcons.TRASH);
+	CssLayout actions = new CssLayout(save, cancel, delete);
+
+
+	@Autowired
+	public MesaEditor(MesaService service, ZonaService serviceZona) {
+		this.service = service;
+		this.serviceZona = serviceZona;
+
+		addComponents(titulo, numero, zona, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
@@ -54,9 +63,23 @@ public class MesaEditor extends VerticalLayout {
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> repository.save(Mesa));
-		delete.addClickListener(e -> repository.delete(Mesa));
+		save.addClickListener(e -> service.save(Mesa));
+		delete.addClickListener(e -> service.delete(Mesa));
 		cancel.addClickListener(e -> editMesa(Mesa));
+		
+		if(SecurityUtils.getUserLogin().getLocal()!= null)
+		{
+			zona.setItems(SecurityUtils.getUserLogin().getLocal().getZonas());
+		}
+		else
+		{
+			zona.setItems(serviceZona.findAll());
+		}
+		
+		/*numero.addValueChangeListener(e -> {
+			Mesa.setNumero(Integer.parseInt(numero.getValue()));
+		});*/
+		
 		setVisible(false);
 	}
 
@@ -72,7 +95,7 @@ public class MesaEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Mesa = repository.findOne(c.getId());
+			Mesa = service.findOne(c.getId());
 		}
 		else {
 			Mesa = c;

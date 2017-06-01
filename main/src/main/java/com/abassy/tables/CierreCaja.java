@@ -47,7 +47,7 @@ public class CierreCaja implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_local")
 	public Local getLocal() {
 		return this.local;

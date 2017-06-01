@@ -44,7 +44,7 @@ public class Zona implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_local")
 	public Local getLocal() {
 		return this.local;
@@ -69,6 +69,11 @@ public class Zona implements java.io.Serializable {
 
 	public void setMesas(List<Mesa> mesas) {
 		this.mesas = mesas;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s", nombre);
 	}
 
 }

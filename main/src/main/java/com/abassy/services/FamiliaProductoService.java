@@ -3,11 +3,13 @@ package com.abassy.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.abassy.tables.FamiliaProducto;
 import com.abassy.tables.FamiliaProductoRepository;
 
+@Service
 public class FamiliaProductoService implements FamiliaProductoServiceInt
 {
 	@Autowired

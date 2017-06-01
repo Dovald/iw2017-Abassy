@@ -22,6 +22,7 @@ public class Pedido implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	
 	private Cliente cliente;
 	private Local local;
 	private Mesa mesa;
@@ -91,7 +92,7 @@ public class Pedido implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_mesa", nullable = true)
+	@JoinColumn(name = "id_mesa", nullable = false)
 	public Mesa getMesa() {
 		return this.mesa;
 	}

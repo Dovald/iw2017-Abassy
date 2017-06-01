@@ -1,40 +1,29 @@
 package com.abassy.views;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-
-import com.abassy.tables.*;
-
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 
-
+import com.abassy.services.ProductoService;
+import com.abassy.tables.Producto;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.UI;
-import com.vaadin.annotations.Theme;
-import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.*;
-import com.vaadin.spring.annotation.*;
 
 @SpringView(name = ProductoCrud.VIEW_NAME)
 public class ProductoCrud extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "Producto";
 	private static final long serialVersionUID = 1L;
 	
-	//private final UserRepository repo; //hay que cambiarlo
-	//private final UserEditor editor; ////hay que cambiarlo
+	private final ProductoService service;
+	private final ProductoEditor editor;
 	final Grid<Producto> grid;
 	final TextField filter;
 	private final Button addNewBtn;
@@ -42,12 +31,12 @@ public class ProductoCrud extends VerticalLayout implements View {
 	
 	@Autowired
 	//public CierreCajaCrud(UserRepository hay que cambiarlo repo, UserEditor hay que cambiarlo editor) {
-	public ProductoCrud(){	
-		//this.repo = repo;
-		//this.editor = editor;
+	public ProductoCrud(ProductoService service, ProductoEditor editor){	
+		this.service = service;
+		this.editor = editor;
 		this.grid = new Grid<>(Producto.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Añadir Producto", FontAwesome.PLUS);
+		this.addNewBtn = new Button("Añadir Producto", VaadinIcons.PLUS_CIRCLE);
 	}
 
 	@PostConstruct
@@ -60,7 +49,7 @@ public class ProductoCrud extends VerticalLayout implements View {
 
 		grid.setWidth(1000, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "familiaProducto", "nombre", "precio", "tipo", "imagen", "productoCompuestosForIdProducto", "lineaPedidos", "productoCompuestosForIdProducto");
+		grid.setColumns("id", "familiaProducto", "nombre", "precio", "tipo", "productoCompuestosForIdProducto", "lineaPedidos", "productoCompuestosForIdProducto");
 
 		//filter.setPlaceholder("Filter by last name");
 

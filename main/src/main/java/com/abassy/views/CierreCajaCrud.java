@@ -1,69 +1,57 @@
 package com.abassy.views;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-
-import com.abassy.tables.*;
-
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.abassy.services.CierreCajaService;
+import com.abassy.tables.CierreCaja;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.UI;
-import com.vaadin.annotations.Theme;
-import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.*;
-import com.vaadin.spring.annotation.*;
 
 @SpringView(name = CierreCajaCrud.VIEW_NAME)
 public class CierreCajaCrud extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "CierreCaja";
 	private static final long serialVersionUID = 1L;
 	
-	//private final UserRepository repo; //hay que cambiarlo
-	//private final UserEditor editor; ////hay que cambiarlo
+	private final CierreCajaService service;
+	private final CierreCajaEditor editor;
 	final Grid<CierreCaja> grid;
-	final TextField filter;
 	private final Button addNewBtn;
-
 	
 	@Autowired
-	//public CierreCajaCrud(UserRepository hay que cambiarlo repo, UserEditor hay que cambiarlo editor) {
-	public CierreCajaCrud(){	
-		//this.repo = repo;
-		//this.editor = editor;
+	public CierreCajaCrud(CierreCajaService service, CierreCajaEditor editor){	
+		this.service = service;
+		this.editor = editor;
 		this.grid = new Grid<>(CierreCaja.class);
-		this.filter = new TextField();
-		this.addNewBtn = new Button("Añadir cierre de caja", FontAwesome.PLUS);
+		this.addNewBtn = new Button("Cerrar la caja", VaadinIcons.ARCHIVE);
 	}
 
 	@PostConstruct
 	protected void init() {
 		// build layout
-		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-		//VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
-		VerticalLayout mainLayout = new VerticalLayout(actions, grid);
+		HorizontalLayout actions = new HorizontalLayout(addNewBtn);
+		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
 		addComponent(mainLayout);
 
 		grid.setWidth(1000, Unit.PIXELS);
 		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "local", "importe", "fecha");
-
-	//	filter.setPlaceholder("Filter by last name");
-
+		grid.setColumns("id", "local", "importe", "importe_real", "fecha");
 		
+		addNewBtn.addClickListener(e -> editor.editCaja(new CierreCaja()));
 		
+		editor.setChangeHandler(() -> {
+			editor.setVisible(false);
+			grid.setItems(service.findAll());
+		});
+		
+		grid.setItems(service.findAll());
 	}
 	
 	@Override
@@ -71,16 +59,5 @@ public class CierreCajaCrud extends VerticalLayout implements View {
 		// TODO Auto-generated method stub
 
 	}
-
-	/*
-	private void listCustomers(String filterText) {
-		if (StringUtils.isEmpty(filterText)) {
-			grid.setItems(repo.findAll());
-		}
-		else {
-			grid.setItems(repo.findByLastNameStartsWithIgnoreCase(filterText));
-		}
-	}*/
-	
 	
 }

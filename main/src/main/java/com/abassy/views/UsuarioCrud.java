@@ -1,33 +1,22 @@
 package com.abassy.views;
 
-import com.abassy.tables.*;
-import com.abassy.services.UsuarioService;
-
-import java.util.Collection;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import com.abassy.services.UsuarioService;
+import com.abassy.tables.Usuario;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.UI;
-import com.vaadin.annotations.Theme;
-import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.*;
-import com.vaadin.spring.annotation.*;
 
 @SpringView(name = UsuarioCrud.VIEW_NAME)
 public class UsuarioCrud extends VerticalLayout implements View {
@@ -47,7 +36,7 @@ public class UsuarioCrud extends VerticalLayout implements View {
 		this.editor = editor;
 		this.grid = new Grid<>(Usuario.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("Añadir Usuario", FontAwesome.PLUS);
+		this.addNewBtn = new Button("Añadir Usuario", VaadinIcons.PLUS_CIRCLE);
 	}
 
 	@PostConstruct
@@ -63,7 +52,7 @@ public class UsuarioCrud extends VerticalLayout implements View {
 		//grid.setColumns("id", "local", "tipo", "nombre", "apellidos", "password", "pedidos");
 
 	
-		filter.setPlaceholder("Filter by last name");
+		filter.setPlaceholder("Filtrar Nombre");
 
 		// Hook logic to components
 		
