@@ -4,11 +4,13 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.abassy.security.SecurityUtils;
 import com.abassy.services.CierreCajaService;
 import com.abassy.tables.CierreCaja;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Responsive;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
@@ -38,11 +40,15 @@ public class CierreCajaCrud extends VerticalLayout implements View {
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(addNewBtn);
 		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
+		actions.setSizeFull();
+		grid.setSizeFull();
+		mainLayout.setSizeFull();
+		Responsive.makeResponsive(mainLayout);
 		addComponent(mainLayout);
 
-		grid.setWidth(1000, Unit.PIXELS);
-		grid.setHeight(500, Unit.PIXELS);
 		grid.setColumns("id", "local", "importe", "importe_real", "fecha");
+		
+		if(SecurityUtils.getUserLogin().getTipo().equals("GERENTE")) addNewBtn.setVisible(false);
 		
 		addNewBtn.addClickListener(e -> editor.editCaja(new CierreCaja()));
 		
@@ -57,7 +63,6 @@ public class CierreCajaCrud extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
-
 	}
 	
 }

@@ -1,6 +1,8 @@
 package com.abassy.views;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,37 +21,29 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-/**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in VaadinUI.
- * <p>
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX. See e.g. AbstractForm in Viritin
- * (https://vaadin.com/addon/viritin).
- */
-
+@SuppressWarnings("deprecation")
 @SpringComponent
 @UIScope
 public class ProductoEditor extends VerticalLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private final ProductoService service;
-	
-	private final FamiliaProductoService serviceFP;
 
 	private Producto product;
+	
+	private boolean bandera;
 
-	Label title = new Label("Nuevo Producto");
+	Label title = new Label("Producto");
 	ComboBox<FamiliaProducto> familia_producto = new ComboBox<>("Familia Producto");
 	TextField nombre = new TextField("Nombre");
 	TextField precio = new TextField("Precio");
-	
+	TwinColSelect<Producto> select = new TwinColSelect<>("Componentes:");
 
 	/* Action buttons */
 	Button save = new Button("Guardar", VaadinIcons.CHECK_CIRCLE);
@@ -58,42 +52,70 @@ public class ProductoEditor extends VerticalLayout {
 	CssLayout actions = new CssLayout(save, cancel, delete);
 
 	Binder<Producto> binder = new Binder<>(Producto.class);
-
+	
 	@Autowired
 	public ProductoEditor(ProductoService service, FamiliaProductoService serviceFP) {
-		this.service = service;
-		this.serviceFP = serviceFP;
 
-		addComponents(title, familia_producto, nombre, precio, actions);
+		addComponents(title, familia_producto, nombre, precio, select, actions);
 		
-		familia_producto.setItems(serviceFP.findAll());
+		select.setWidth("500px");
 
-		binder.forField(nombre).bind(Producto::getNombre, Producto::setNombre);
+		binder.forField(familia_producto)
+		  .asRequired("No puede quedar en blanco")
+		  .bind(Producto::getFamiliaProducto, Producto::setFamiliaProducto);
+		
+		binder.forField(nombre)
+		  .asRequired("No puede quedar en blanco")
+		  .bind(Producto::getNombre, Producto::setNombre);
+		
+		binder.forField(select)
+		  .bind(Producto::getProductos, Producto::setProductos);
+		
 		binder.forField(precio)
+		  .asRequired("No puede quedar en blanco")
 		  .withValidator(str -> str != null && Float.parseFloat(str) >= 0.0f, "Número introducido Inválido")
 		  .withNullRepresentation(Float.toString(0.0f))
 		  .withConverter(
 		    new StringToFloatConverter("Debes introducir un número") {
 				private static final long serialVersionUID = 1L;
 				protected java.text.NumberFormat getFormat(Locale locale) {
-		        NumberFormat format = super.getFormat(locale);
+		        NumberFormat format = super.getFormat(Locale.forLanguageTag("US"));
 		        format.setParseIntegerOnly(false);
 		        return format;
 				};
 		    })
-		  .bind(Producto::getPrecio, Producto::setPrecio);
-		binder.forField(familia_producto).bind(Producto::getFamiliaProducto, Producto::setFamiliaProducto);
+		  .bind(Producto::getPrecio, Producto::setPrecio);		
 
 		// Configure and style components
 		setSpacing(true);
-		actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		actions.setStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> service.save(product));
+		save.addClickListener(e -> {
+			if(binder.isValid())
+			{
+				bandera = true;
+				List<Producto> prod = new ArrayList<Producto>(service.findByNombreStartsWithIgnoreCase(nombre.getValue()));
+				for(int i = 0; i < prod.size(); i++) {
+					if(prod.get(i).getNombre().equals(nombre.getValue()))
+						if(prod.get(i).getId() != product.getId()) bandera = false;
+				}
+				if(bandera) {
+					service.save(product);
+				}
+				else Notification.show("El producto ya existe", Notification.TYPE_WARNING_MESSAGE);
+			}
+			else Notification.show("Revise los campos del formulario", Notification.TYPE_WARNING_MESSAGE);
+		});
 		delete.addClickListener(e -> service.delete(product));
-		cancel.addClickListener(e -> editProducto(product));
+		cancel.addClickListener(e -> editProducto(product,service));
+		
+		familia_producto.setItems(serviceFP.findAll());
+		select.setItems(service.findAll());
+	
+		
 		setVisible(false);
 	}
 
@@ -101,7 +123,7 @@ public class ProductoEditor extends VerticalLayout {
 		void onChange();
 	}
 
-	public final void editProducto(Producto c) {
+	public final void editProducto(Producto c,ProductoService service) {
 		if (c == null) {
 			setVisible(false);
 			return;
@@ -110,15 +132,14 @@ public class ProductoEditor extends VerticalLayout {
 		if (persisted) {
 			// Find fresh entity for editing
 			product = service.findOne(c.getId());
+			select.setItems(product.getProductos());
+
 		}
 		else {
 			product = c;
 		}
 		cancel.setVisible(persisted);
-
-		// Bind User properties to similarly named fields
-		// Could also use annotation or "manual binding" or programmatically
-		// moving values from fields to entities before saving
+		
 		binder.setBean(product);
 
 		setVisible(true);

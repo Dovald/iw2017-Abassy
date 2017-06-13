@@ -36,7 +36,7 @@ public class FamiliaProductoService implements FamiliaProductoServiceInt
 	}
 	
 	@Override
-	public FamiliaProducto findByNombreStartsWithIgnoreCase(String nombre)
+	public List<FamiliaProducto> findByNombreStartsWithIgnoreCase(String nombre)
 	{
 		return repository.findByNombreStartsWithIgnoreCase(nombre);
 	}

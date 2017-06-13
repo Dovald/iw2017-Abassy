@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import com.abassy.services.ProductoService;
-import com.abassy.tables.Local;
 import com.abassy.tables.Producto;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Responsive;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
@@ -29,10 +29,8 @@ public class ProductoCrud extends VerticalLayout implements View {
 	final Grid<Producto> grid;
 	final TextField filter;
 	private final Button addNewBtn;
-
 	
 	@Autowired
-	//public CierreCajaCrud(UserRepository hay que cambiarlo repo, UserEditor hay que cambiarlo editor) {
 	public ProductoCrud(ProductoService service, ProductoEditor editor){	
 		this.service = service;
 		this.editor = editor;
@@ -46,24 +44,25 @@ public class ProductoCrud extends VerticalLayout implements View {
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
+		actions.setSizeFull();
+		grid.setSizeFull();
+		mainLayout.setSizeFull();
+		Responsive.makeResponsive(mainLayout);
 		addComponent(mainLayout);
 
-		grid.setWidth(1000, Unit.PIXELS);
-		grid.setHeight(500, Unit.PIXELS);
 		grid.setColumns("id", "familiaProducto", "nombre", "precio");
+		grid.getColumn("familiaProducto").setCaption("Familia Producto");
 
 		filter.setPlaceholder("Filtrar Nombre");
 		
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
 		filter.addValueChangeListener(e -> listCustomers(e.getValue()));
 		
-		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editProducto(e.getValue());
+			editor.editProducto(e.getValue(),service);
 		});
 
-		//filter.setPlaceholder("Filter by last name");
-		addNewBtn.addClickListener(e -> editor.editProducto(new Producto()));
+		addNewBtn.addClickListener(e -> editor.editProducto(new Producto(),service));
 
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
@@ -78,7 +77,6 @@ public class ProductoCrud extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
-
 	}
 	
 	private void listCustomers(String filterText) {

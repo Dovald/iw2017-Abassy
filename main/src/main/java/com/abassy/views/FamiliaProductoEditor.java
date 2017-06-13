@@ -1,5 +1,8 @@
 package com.abassy.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.abassy.tables.*;
@@ -13,10 +16,12 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+@SuppressWarnings("deprecation")
 @SpringComponent
 @UIScope
 public class FamiliaProductoEditor extends VerticalLayout {
@@ -25,10 +30,11 @@ public class FamiliaProductoEditor extends VerticalLayout {
 
 	private final FamiliaProductoService service;
 
-	private FamiliaProducto FamiliaProducto;
+	private FamiliaProducto familiaProducto;
+	
+	private boolean bandera;
 
-	/* Fields to edit properties in FamiliaProducto entity */
-	Label titulo = new Label("FamiliaProducto");
+	Label titulo = new Label("Familia Producto");
 	TextField nombre = new TextField("Nombre");
 
 	/* Action buttons */
@@ -43,21 +49,37 @@ public class FamiliaProductoEditor extends VerticalLayout {
 	public FamiliaProductoEditor(FamiliaProductoService service) {
 		this.service = service;
 
-		addComponents(nombre, actions);
+		addComponents(titulo, nombre, actions);
 
-		// bind using naming convention
-		binder.bindInstanceFields(this);
+		binder.forField(nombre)
+		  .asRequired("No puede quedar en blanco")
+		  .bind(FamiliaProducto::getNombre, FamiliaProducto::setNombre);
 
 		// Configure and style components
 		setSpacing(true);
-		actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		actions.setStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> service.save(FamiliaProducto));
-		delete.addClickListener(e -> service.delete(FamiliaProducto));
-		cancel.addClickListener(e -> editFamiliaProducto(FamiliaProducto));
+		save.addClickListener(e -> {
+			if(binder.isValid())
+			{
+				bandera = true;
+				List<FamiliaProducto> famProd = new ArrayList<FamiliaProducto>(service.findByNombreStartsWithIgnoreCase(nombre.getValue()));
+				for(int i = 0; i < famProd.size(); i++) {
+					if(famProd.get(i).getNombre().equals(nombre.getValue()))
+					if(famProd.get(i).getId() != familiaProducto.getId()) bandera = false;
+				}
+				if(bandera) {
+					service.save(familiaProducto);
+				}
+				else Notification.show("La familia de producto ya existe", Notification.TYPE_WARNING_MESSAGE);
+			}
+			else Notification.show("Revise los campos del formulario", Notification.TYPE_WARNING_MESSAGE);
+		});
+		delete.addClickListener(e -> service.delete(familiaProducto));
+		cancel.addClickListener(e -> editFamiliaProducto(familiaProducto));
 		setVisible(false);
 	}
 
@@ -73,21 +95,19 @@ public class FamiliaProductoEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			FamiliaProducto = service.findOne(c.getId());
+			familiaProducto = service.findOne(c.getId());
 		}
 		else {
-			FamiliaProducto = c;
+			familiaProducto = c;
 		}
 		cancel.setVisible(persisted);
 
-		binder.setBean(FamiliaProducto);
+		binder.setBean(familiaProducto);
 
 		setVisible(true);
 
 		// A hack to ensure the whole form is visible
 		save.focus();
-		// Select all text in firstName field automatically
-		//firstName.selectAll();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

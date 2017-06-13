@@ -1,5 +1,8 @@
 package com.abassy.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.abassy.services.ClienteService;
@@ -12,10 +15,12 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+@SuppressWarnings("deprecation")
 @SpringComponent
 @UIScope
 public class ClienteEditor extends VerticalLayout {
@@ -24,10 +29,12 @@ public class ClienteEditor extends VerticalLayout {
 
 	private final ClienteService service;
 
-	private Cliente Cliente;
+	private Cliente cliente;
+	
+	private boolean bandera;
 
 	/* Fields to edit properties in User entity */
-	Label titulo = new Label("Nuevo Cliente");
+	Label titulo = new Label("Cliente");
 	TextField nombre = new TextField("Nombre");
 	TextField direccion = new TextField("Dirección");
 	TextField telefono = new TextField("Teléfono");
@@ -46,19 +53,43 @@ public class ClienteEditor extends VerticalLayout {
 
 		addComponents(titulo, nombre, direccion, telefono, actions);
 
-		// bind using naming convention
-		binder.bindInstanceFields(this);
+		binder.forField(nombre)
+		.asRequired("No puede quedar en blanco")
+		.bind(Cliente::getNombre, Cliente::setNombre);
+		
+		binder.forField(direccion)
+		.asRequired("No puede quedar en blanco")
+		.bind(Cliente::getDireccion, Cliente::setDireccion);
+		
+		binder.forField(telefono)
+		.asRequired("No puede quedar en blanco")
+		.bind(Cliente::getTelefono, Cliente::setTelefono);
 
 		// Configure and style components
 		setSpacing(true);
-		actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		actions.setStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> service.save(Cliente));
-		delete.addClickListener(e -> service.delete(Cliente));
-		cancel.addClickListener(e -> editCliente(Cliente));
+		save.addClickListener(e -> {
+			if(binder.isValid())
+			{
+				bandera = true;
+				List<Cliente> clientes = new ArrayList<Cliente>(service.findByTelefonoStartsWithIgnoreCase(telefono.getValue()));
+				for(int i = 0; i < clientes.size(); i++) {
+					if(clientes.get(i).getTelefono().equals(telefono.getValue()))
+					if(clientes.get(i).getId() != cliente.getId()) bandera = false;
+				}
+				if(bandera) {
+					service.save(cliente);
+				}
+				else Notification.show("El teléfono ya está registrado", Notification.TYPE_WARNING_MESSAGE);
+			}
+			else Notification.show("Revise los campos del formulario", Notification.TYPE_WARNING_MESSAGE);
+		});
+		delete.addClickListener(e -> service.delete(cliente));
+		cancel.addClickListener(e -> editCliente(cliente));
 		setVisible(false);
 	}
 
@@ -74,21 +105,19 @@ public class ClienteEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Cliente = service.findOne(c.getId());
+			cliente = service.findOne(c.getId());
 		}
 		else {
-			Cliente = c;
+			cliente = c;
 		}
 		cancel.setVisible(persisted);
 
-		binder.setBean(Cliente);
+		binder.setBean(cliente);
 
 		setVisible(true);
 
 		// A hack to ensure the whole form is visible
 		save.focus();
-		// Select all text in firstName field automatically
-		//firstName.selectAll();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

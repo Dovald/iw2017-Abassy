@@ -16,9 +16,15 @@ public class LocalService implements LocalServiceInt
 	private LocalRepository repository;
 	
 	@Override
-	public Local findByDireccionStartsWithIgnoreCase(String direccion)
+	public List<Local> findByDireccionStartsWithIgnoreCase(String direccion)
 	{
 		return repository.findByDireccionStartsWithIgnoreCase(direccion);
+	}
+	
+	@Override
+	public Local findByDireccionIgnoreCaseAndCiudadIgnoreCase(String direccion, String ciudad)
+	{
+		return repository.findByDireccionIgnoreCaseAndCiudadIgnoreCase(direccion, ciudad);
 	}
 	
 	@Override

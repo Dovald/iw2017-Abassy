@@ -6,7 +6,8 @@ import com.abassy.tables.Local;
 
 public interface LocalServiceInt 
 {
-	public Local findByDireccionStartsWithIgnoreCase(String direccion);
+	public List<Local> findByDireccionStartsWithIgnoreCase(String direccion);
+	public Local findByDireccionIgnoreCaseAndCiudadIgnoreCase(String direccion, String ciudad);
 	public void save(Local local);
 	public void delete(Local local);
 	public List<Local> findAll();	

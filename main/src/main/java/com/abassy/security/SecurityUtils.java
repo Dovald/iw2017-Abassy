@@ -26,8 +26,12 @@ public final class SecurityUtils {
     
     public static Usuario getUserLogin(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Usuario user = (Usuario)authentication.getPrincipal();
-        return user;
+        if(authentication != null ){
+        	Usuario user = (Usuario)authentication.getPrincipal();
+            return user;
+        } else{
+        	return null;
+        }
       }
     
     public static Collection<? extends GrantedAuthority> roles() {

@@ -10,6 +10,7 @@ import com.abassy.tables.FamiliaProductoRepository;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Responsive;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
@@ -23,8 +24,8 @@ public class FamiliaProductoCrud extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "FamiliaProducto";
 	private static final long serialVersionUID = 1L;
 	
-	private final FamiliaProductoRepository service; //hay que cambiarlo
-	private final FamiliaProductoEditor editor; ////hay que cambiarlo
+	private final FamiliaProductoRepository service;
+	private final FamiliaProductoEditor editor;
 	final Grid<FamiliaProducto> grid;
 	final TextField filter;
 	private final Button addNewBtn;
@@ -41,13 +42,14 @@ public class FamiliaProductoCrud extends VerticalLayout implements View {
 
 	@PostConstruct
 	protected void init() {
-		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
+		actions.setSizeFull();
+		grid.setSizeFull();
+		mainLayout.setSizeFull();
+		Responsive.makeResponsive(mainLayout);
 		addComponent(mainLayout);
-
-		grid.setWidth(1000, Unit.PIXELS);
-		grid.setHeight(500, Unit.PIXELS);
+		
 		grid.setColumns("id", "nombre");
 
 		filter.setPlaceholder("Filtrar Nombre");
@@ -60,7 +62,6 @@ public class FamiliaProductoCrud extends VerticalLayout implements View {
 			editor.editFamiliaProducto(e.getValue());
 		});
 
-		//filter.setPlaceholder("Filter by last name");
 		addNewBtn.addClickListener(e -> editor.editFamiliaProducto(new FamiliaProducto()));
 
 		// Listen changes made by the editor, refresh data from backend
@@ -76,7 +77,6 @@ public class FamiliaProductoCrud extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
-
 	}
 
 	private void listCustomers(String filterText) {

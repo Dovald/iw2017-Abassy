@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ZonaRepository extends JpaRepository<Zona, Long> {
 	public List<Zona> findByLocal(Local local);
+	public List<Zona> findByNombreStartsWithIgnoreCase(String nombre);
 }

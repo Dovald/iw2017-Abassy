@@ -25,19 +25,15 @@ public class Pedido implements java.io.Serializable {
 	
 	private Cliente cliente;
 	private Local local;
+	private Zona zona;
 	private Mesa mesa;
 	private Usuario usuario;
 	private Float importe;
+	private Boolean cerrado;
 	private Date fecha;
 	private List<LineaPedido> lineaPedidos;
 
 	public Pedido() {
-	}
-	
-	public Pedido(Local local, Usuario usuario) {
-		this.local = local;
-		this.usuario = usuario;
-		this.fecha = new Date();
 	}
 
 	public Pedido(Cliente cliente, Local local, Usuario usuario, Float importe, Date fecha) {
@@ -71,7 +67,7 @@ public class Pedido implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_cliente", nullable = true)
 	public Cliente getCliente() {
 		return this.cliente;
@@ -90,9 +86,19 @@ public class Pedido implements java.io.Serializable {
 	public void setLocal(Local local) {
 		this.local = local;
 	}
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "zona", nullable = true)
+	public Zona getZona() {
+		return this.zona;
+	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_mesa", nullable = false)
+	public void setZona(Zona zona) {
+		this.zona = zona;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_mesa", nullable = true)
 	public Mesa getMesa() {
 		return this.mesa;
 	}
@@ -101,7 +107,7 @@ public class Pedido implements java.io.Serializable {
 		this.mesa = mesa;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_usuario", nullable = false)
 	public Usuario getUsuario() {
 		return this.usuario;
@@ -129,13 +135,21 @@ public class Pedido implements java.io.Serializable {
 		this.fecha = fecha;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	public List<LineaPedido> getLineaPedidos() {
 		return this.lineaPedidos;
 	}
 
 	public void setLineaPedidos(List<LineaPedido> lineaPedidos) {
 		this.lineaPedidos = lineaPedidos;
+	}
+
+	public Boolean getCerrado() {
+		return cerrado;
+	}
+
+	public void setCerrado(Boolean cerrado) {
+		this.cerrado = cerrado;
 	}
 
 }

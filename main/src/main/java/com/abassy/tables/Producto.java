@@ -1,17 +1,18 @@
 package com.abassy.tables;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import java.util.List;
 
 @Entity
 @Table(name = "producto", catalog = "abassy_db")
@@ -25,7 +26,7 @@ public class Producto implements java.io.Serializable {
 	private Float precio;
 	private Boolean tipo;
 	private byte[] imagen;
-	List<Producto> productos;
+	private Set<Producto> productos;
 
 	public Producto() {
 	}
@@ -41,7 +42,7 @@ public class Producto implements java.io.Serializable {
 	}
 
 	// Producto sin imagen
-	public Producto(FamiliaProducto familiaProducto, String nombre, Float precio, Boolean tipo,	List<Producto> productos) {
+	public Producto(FamiliaProducto familiaProducto, String nombre, Float precio, Boolean tipo,	Set<Producto> productos) {
 		this.familiaProducto = familiaProducto;
 		this.nombre = nombre;
 		this.precio = precio;
@@ -51,7 +52,7 @@ public class Producto implements java.io.Serializable {
 	}
 	
 	public Producto(FamiliaProducto familiaProducto, String nombre, Float precio, Boolean tipo, byte[] imagen,
-			List<Producto> productos) {
+			Set<Producto> productos) {
 		this.familiaProducto = familiaProducto;
 		this.nombre = nombre;
 		this.precio = precio;
@@ -114,13 +115,18 @@ public class Producto implements java.io.Serializable {
 		this.imagen = imagen;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY)
-	public List<Producto> getProductos() {
+	@ManyToMany(fetch = FetchType.EAGER)
+	public Set<Producto> getProductos() {
 		return this.productos;
 	}
 
-	public void setProductos(List<Producto> productos) {
+	public void setProductos(Set<Producto> productos) {
 		this.productos = productos;
+	}
+	
+	@Override
+	public String toString() {
+		return familiaProducto + " - " + nombre;
 	}
 
 }

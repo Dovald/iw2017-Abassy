@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.abassy.tables.Local;
 import com.abassy.tables.Mesa;
 import com.abassy.tables.MesaRepository;
 import com.abassy.tables.Zona;
@@ -29,9 +30,9 @@ public class MesaService implements MesaServiceInt
 	}
 	
 	@Override
-	public Mesa findByNumeroAndZona(Integer numero,Zona zona)
+	public Mesa findByNumeroAndZonaAndLocal(Integer numero, Zona zona, Local local)
 	{
-		return repository.findByNumeroAndZona(numero, zona);		
+		return repository.findByNumeroAndZonaAndLocal(numero, zona, local);		
 	}
 	
 	@Override

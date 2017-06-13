@@ -23,6 +23,12 @@ public class ZonaService implements ZonaServiceInt
 	}
 	
 	@Override
+	public List<Zona> findByNombreStartsWithIgnoreCase(String nombre)
+	{
+		return repository.findByNombreStartsWithIgnoreCase(nombre);	
+	}
+	
+	@Override
 	public void save(Zona zona)
 	{
 		repository.save(zona);

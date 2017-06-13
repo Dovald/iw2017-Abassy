@@ -8,6 +8,7 @@ import com.abassy.tables.Zona;
 public interface ZonaServiceInt 
 {
 	public List<Zona> findByLocal(Local local);
+	public List<Zona> findByNombreStartsWithIgnoreCase(String nombre);
 	public void save(Zona zona);
 	public void delete(Zona zona);
 	public List<Zona> findAll();	

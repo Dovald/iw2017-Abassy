@@ -28,7 +28,7 @@ public class Usuario implements java.io.Serializable, UserDetails {
 	
 	private Long id;
 	private Local local;
-	private Integer tipo;
+	private String tipo;
 	private String nombre;
 	private String apellidos;
 	private String username;
@@ -38,18 +38,12 @@ public class Usuario implements java.io.Serializable, UserDetails {
 	public Usuario() {
 	}
 	
-	public Usuario(Local local, String nombre, String apellidos, int tipo) {
+	public Usuario(Local local, String nombre, String apellidos, String tipo) {
 		this.local = local;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.tipo = tipo;
 		this.username = nombre;	
-	}
-
-	public Usuario(String nombre, String apellidos, String username) {
-		this.nombre = nombre;
-		this.apellidos = apellidos;
-		this.username = username;	
 	}
 	
 	public Usuario(String nombre, String apellidos) {
@@ -58,14 +52,14 @@ public class Usuario implements java.io.Serializable, UserDetails {
 		this.username = nombre;
 	}
 	
-	public Usuario(String nombre, String apellidos, int tipo) {
+	public Usuario(String nombre, String apellidos, String tipo) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.username = nombre;
 		this.tipo = tipo;
 	}
 
-	public Usuario(Local local, int tipo, String nombre, String apellidos, String password, List<Pedido> pedidos) {
+	public Usuario(Local local, String tipo, String nombre, String apellidos, String password, List<Pedido> pedidos) {
 		this.local = local;
 		this.tipo = tipo;
 		this.nombre = nombre;
@@ -96,11 +90,11 @@ public class Usuario implements java.io.Serializable, UserDetails {
 		this.local = local;
 	}
 
-	public Integer getTipo() {
+	public String getTipo() {
 		return this.tipo;
 	}
 
-	public void setTipo(Integer tipo) {
+	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
 
@@ -140,20 +134,20 @@ public class Usuario implements java.io.Serializable, UserDetails {
 	@Transient
 	@Override
 	public String toString() {
-		return String.format("Usuario[id=%d, firstName='%s', lastName='%s', username='%s', password='%s']", id,
-				nombre,apellidos,username,password);
+		return nombre;
+				//String.format("Usuario[id=%d, firstName='%s', lastName='%s', username='%s', password='%s']", id,
+				//nombre,apellidos,username,password);
 	}
 	
 	@Transient
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> list=new ArrayList<GrantedAuthority>();
-		//list.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
-		if (this.tipo == 0) 
+		if (this.tipo == "GERENTE") 
 			list.add(new SimpleGrantedAuthority("GERENTE"));
-		else if (this.tipo == 1)
+		else if (this.tipo == "ENCARGADO")
 			list.add(new SimpleGrantedAuthority("ENCARGADO"));
-		else if (this.tipo == 2)
+		else if (this.tipo == "CAMARERO")
 			list.add(new SimpleGrantedAuthority("CAMARERO"));
 		return list;
 	}

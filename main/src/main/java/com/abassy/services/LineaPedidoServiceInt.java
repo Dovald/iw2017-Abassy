@@ -10,8 +10,8 @@ public interface LineaPedidoServiceInt
 {
 	public List<LineaPedido> findByPedido(Pedido pedido);
 	public LineaPedido findByPedidoAndProducto(Pedido pedido,Producto producto);
-	public void save(LineaPedido lineapedido);
-    public void delete(LineaPedido lineapedido);
+	public void save(LineaPedido lineapedido, Pedido pedido);
+    public void delete(LineaPedido lineapedido, Pedido pedido);
     public List<LineaPedido> findAll();	
 	public LineaPedido findOne(Long id);
 

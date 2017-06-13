@@ -52,5 +52,9 @@ public class UsuarioService implements UserDetailsService {
 	public List<Usuario> findAll() {
 		return repo.findAll();
 	}
+	
+	public Usuario findByUsername(String username) {
+		return repo.findByUsername(username);
+	}
 
 }

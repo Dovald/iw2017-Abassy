@@ -4,7 +4,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.abassy.security.VaadinSessionSecurityContextHolderStrategy;
+import com.abassy.security.SecurityUtils;
 import com.abassy.services.LineaPedidoService;
 import com.abassy.services.PedidoService;
 import com.abassy.tables.LineaPedido;
@@ -14,6 +14,7 @@ import com.abassy.tables.Usuario;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Responsive;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
@@ -26,15 +27,16 @@ public class PedidoCrud extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "Pedido";
 	private static final long serialVersionUID = 1L;
 	
-	private static PedidoService service;
-	private static LineaPedidoService serviceLP;
-	private static PedidoEditor editor;
-	private static LineaPedidoEditor editorLP;
-	public static Grid<Pedido> grid;
-	public static Grid<LineaPedido> gridLP;
+	private final PedidoService service;
+	private final LineaPedidoService serviceLP;
+	private final PedidoEditor editor;
+	private final LineaPedidoEditor editorLP;
+	public final Grid<Pedido> grid;
+	public final Grid<LineaPedido> gridLP;
 	private final Button addNewBtn;
 	private final Button addNewLine;
-
+	
+	private Pedido pedidoSeleccionado;
 	
 	@Autowired
 	public PedidoCrud(PedidoService service, PedidoEditor editor, LineaPedidoService serviceLP, LineaPedidoEditor editorLP){	
@@ -53,68 +55,98 @@ public class PedidoCrud extends VerticalLayout implements View {
 		HorizontalLayout actions = new HorizontalLayout(addNewBtn);
 		HorizontalLayout actionsLP = new HorizontalLayout(addNewLine);
 		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor, actionsLP, gridLP, editorLP);
+		actions.setSizeFull();
+		actionsLP.setSizeFull();
+		grid.setSizeFull();
+		gridLP.setSizeFull();
+		mainLayout.setSizeFull();
+		Responsive.makeResponsive(mainLayout);
 		addComponent(mainLayout);
 
-		grid.setWidth(1000, Unit.PIXELS);
-		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "cliente", "local", "mesa", "usuario", "importe", "fecha");
+		grid.setColumns("id", "zona", "mesa", "cliente", "usuario", "importe", "fecha", "cerrado");
 		grid.sort("fecha", SortDirection.DESCENDING);
-		gridLP.setWidth(1000, Unit.PIXELS);
-		gridLP.setHeight(500, Unit.PIXELS);
+	
 		gridLP.setColumns("id", "producto", "cantidad");
+
+		gridLP.addColumn(lineaPedido -> {
+			return lineaPedido.getProducto().getPrecio() * lineaPedido.getCantidad();
+		}).setCaption("Precio");
 		
+		actionsLP.setVisible(false);
+		gridLP.setVisible(false);
+		
+		if(SecurityUtils.getUserLogin().getTipo().equals("GERENTE")) addNewBtn.setVisible(false);
+
 		grid.asSingleSelect().addValueChangeListener(e -> {
-			editor.editPedido(e.getValue());
-			gridLP.setVisible(true);
-			actionsLP.setVisible(true);
-			listarLineasPedidos();
+			if(e.getValue() != null){
+				pedidoSeleccionado = e.getValue();
+				if(!SecurityUtils.getUserLogin().getTipo().equals("GERENTE")) {
+					editor.editPedido(pedidoSeleccionado);
+					if(pedidoSeleccionado.getCerrado()) actionsLP.setVisible(false);
+					else actionsLP.setVisible(true);
+					gridLP.setVisible(true);
+					listarLineasPedidos();
+				} else {
+					gridLP.setVisible(true);
+					listarLineasPedidos();
+				}
+			}
+			
 		});
 		
 		gridLP.asSingleSelect().addValueChangeListener(e -> {
-			
-			editorLP.editLineaPedido(e.getValue());
+			if(!SecurityUtils.getUserLogin().getTipo().equals("GERENTE"))
+				if(!pedidoSeleccionado.getCerrado())
+					editorLP.editLineaPedido(e.getValue(), pedidoSeleccionado);
 		});
 
 		// Boton de Pedido
 		addNewBtn.addClickListener(e -> {
-			
+			editorLP.setVisible(false);
+			actionsLP.setVisible(false);
+			gridLP.setVisible(false);
 			editor.editPedido(new Pedido());
 		});
 		
 		// Boton de LineaPedido
 		addNewLine.addClickListener(e -> {
-			editorLP.editLineaPedido(new LineaPedido());
-		});
-
-		// Listen changes made by the editor, refresh data from backend
-		editor.setChangeHandler(() -> {
-			editor.setVisible(false);
+			editorLP.editLineaPedido(new LineaPedido(), pedidoSeleccionado);
 		});
 		
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
 			editor.setVisible(false);
+			gridLP.setVisible(false);
+			actionsLP.setVisible(false);
+			editorLP.setVisible(false);
+			listarPedidos(SecurityUtils.getUserLogin());
 		});
-
 		
-		//listCustomers(null);
+		// Listen changes made by the editor, refresh data from backend
+		editorLP.setChangeHandler(() -> {
+			editorLP.setVisible(false);
+			listarLineasPedidos();
+		});
+	
+		listarPedidos(SecurityUtils.getUserLogin());
 
 	}
 	
-	public static void listarPedidos(Usuario u) {
+	public void listarPedidos(Usuario u) {
 		if (u != null){
-			Local loc = u.getLocal();
-			grid.setItems(service.findByLocal(loc));
-		}else
-			grid.setItems(service.findAll());
+			if(u.getLocal() != null){
+				Local loc = u.getLocal();
+				grid.setItems(service.findByLocal(loc));
+			} else grid.setItems(service.findAll());
+		}
 	}
 	
 	
-	public static void listarLineasPedidos() {
+	public void listarLineasPedidos() {
 		if(serviceLP != null)
-			if((Long)VaadinSessionSecurityContextHolderStrategy.getSession().getAttribute("pedido_id") != null)
+			if(pedidoSeleccionado != null)
 			{
-				Long id = (Long)VaadinSessionSecurityContextHolderStrategy.getSession().getAttribute("pedido_id");
+				Long id = pedidoSeleccionado.getId();
 				Pedido ped = service.findOne(id);
 				gridLP.setItems(serviceLP.findByPedido(ped));
 			}		

@@ -59,7 +59,7 @@ public class Application {
 			//Zona pruebaZona = new Zona("Erg", "Budapest");
 			//repoEst.save(pruebaLocal);
 			
-			/*Usuario root = new Usuario("root", "toor", 0);
+			/*Usuario root = new Usuario("root", "toor", "GERENTE");
 			root.setPassword("root");
 			service.save(root);*/
 			

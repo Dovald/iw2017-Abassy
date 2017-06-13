@@ -1,5 +1,6 @@
 package com.abassy.services;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -7,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.abassy.tables.Local;
-import com.abassy.tables.Pedido;
-import com.abassy.tables.PedidoRepository;
+import com.abassy.security.SecurityUtils;
+import com.abassy.tables.*;
 
 @Service
 public class PedidoService implements PedidoServiceInt
@@ -30,14 +30,35 @@ public class PedidoService implements PedidoServiceInt
 	}
 	
 	@Override
-	public void save(Pedido pedido)
+	public void save(Local local, Pedido pedido, boolean cerrar)//, Cliente cliente, Pedido pedido)
 	{
+		Usuario usuario = SecurityUtils.getUserLogin();
+		Date date = Calendar.getInstance().getTime();
+		pedido.setFecha(date);
+		pedido.setUsuario(usuario);
+		pedido.setLocal(local);
+		
+		float total = 0.0f;
+		List<LineaPedido> linPed = pedido.getLineaPedidos();
+		if(linPed != null)
+			if(!linPed.isEmpty())
+				for(LineaPedido linea : linPed) {
+					total += linea.getProducto().getPrecio() * linea.getCantidad();
+				}
+		pedido.setImporte(total);
+		
+		pedido.setCerrado(cerrar);
 		repository.save(pedido);
 	}
 	
 	@Override
-	public void delete(Pedido pedido)
+	public void delete(Local local, Pedido pedido)
 	{
+		Usuario usuario = SecurityUtils.getUserLogin();
+		Date date = Calendar.getInstance().getTime();
+		pedido.setFecha(date);
+		pedido.setUsuario(usuario);
+		pedido.setLocal(local);
 		repository.delete(pedido);
 	}
 	

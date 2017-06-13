@@ -16,6 +16,6 @@ public interface FamiliaProductoServiceInt
 
     public void delete(FamiliaProducto familiaproducto);
     
-    public FamiliaProducto findByNombreStartsWithIgnoreCase(String nombre);
+    public List<FamiliaProducto> findByNombreStartsWithIgnoreCase(String nombre);
 
 }

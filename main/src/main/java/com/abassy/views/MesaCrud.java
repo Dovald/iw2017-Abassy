@@ -10,6 +10,7 @@ import com.abassy.tables.Mesa;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Responsive;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
@@ -44,23 +45,24 @@ public class MesaCrud extends VerticalLayout implements View {
 	{
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
+		actions.setSizeFull();
+		grid.setSizeFull();
+		mainLayout.setSizeFull();
+		Responsive.makeResponsive(mainLayout);
 		addComponent(mainLayout);
 
-		grid.setWidth(1000, Unit.PIXELS);
-		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "numero", "zona");
+		grid.setColumns("id", "numero", "zona", "local");
+		grid.getColumn("numero").setCaption("Número");
 
 		filter.setPlaceholder("Filtrar Número");
 		
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
 		filter.addValueChangeListener(e -> listCustomers(e.getValue()));
 		
-		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
 			editor.editMesa(e.getValue());
 		});
 
-		//filter.setPlaceholder("Filter by last name");
 		addNewBtn.addClickListener(e -> editor.editMesa(new Mesa()));
 
 		// Listen changes made by the editor, refresh data from backend
@@ -68,7 +70,6 @@ public class MesaCrud extends VerticalLayout implements View {
 			editor.setVisible(false);
 			listCustomers(filter.getValue());
 		});
-
 		
 		listCustomers(null);
 		

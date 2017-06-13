@@ -11,6 +11,7 @@ import com.abassy.tables.LineaPedidoRepository;
 import com.abassy.tables.Pedido;
 import com.abassy.tables.Producto;
 
+
 @Service
 public class LineaPedidoService implements LineaPedidoServiceInt
 {
@@ -30,13 +31,14 @@ public class LineaPedidoService implements LineaPedidoServiceInt
 	}
 	
 	@Override
-	public void save(LineaPedido lineapedido)
+	public void save(LineaPedido lineapedido, Pedido pedido)
 	{
+		lineapedido.setPedido(pedido);
 		repository.save(lineapedido);		
 	}
 	
 	@Override
-    public void delete(LineaPedido lineapedido)
+    public void delete(LineaPedido lineapedido, Pedido pedido)
     {
 		repository.delete(lineapedido);		
     }

@@ -39,8 +39,8 @@ public class ClienteService implements ClienteServiceInt
     }
     
 	@Override
-	public Cliente findByTelefono(String telefono)
+	public List<Cliente> findByTelefonoStartsWithIgnoreCase(String telefono)
     {
-    	return repository.findByTelefono(telefono);
+    	return repository.findByTelefonoStartsWithIgnoreCase(telefono);
     }
 }

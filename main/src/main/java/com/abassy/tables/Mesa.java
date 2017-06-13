@@ -20,19 +20,16 @@ public class Mesa implements java.io.Serializable {
 	
 	private Long id;
 	private Zona zona;
+	private Local local;
 	private Integer numero;
 	private List<Pedido> pedidos;
 
 	public Mesa() {
 	}
-	
-	public Mesa(Zona zona, Integer numero) {
-		this.zona = zona;
-		this.numero = numero;
-	}
 
-	public Mesa(Zona zona, Integer numero, List<Pedido> pedidos) {
+	public Mesa(Zona zona,Local local, Integer numero, List<Pedido> pedidos) {
 		this.zona = zona;
+		this.local = local;
 		this.numero = numero;
 		this.pedidos = pedidos;
 	}
@@ -79,6 +76,16 @@ public class Mesa implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return Integer.toString(numero);
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_local")
+	public Local getLocal() {
+		return local;
+	}
+
+	public void setLocal(Local local) {
+		this.local = local;
 	}
 
 }

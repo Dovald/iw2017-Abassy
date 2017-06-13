@@ -12,7 +12,7 @@ public interface ClienteServiceInt
 
     public void delete(Cliente cliente);
     
-    Cliente findByTelefono(String telefono);
+    public List<Cliente> findByTelefonoStartsWithIgnoreCase(String telefono);
     
 	public Cliente findOne(Long id);
 

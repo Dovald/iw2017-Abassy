@@ -10,6 +10,7 @@ import com.abassy.tables.Usuario;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Responsive;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
@@ -44,28 +45,24 @@ public class UsuarioCrud extends VerticalLayout implements View {
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 		VerticalLayout mainLayout = new VerticalLayout(actions, grid, editor);
+		actions.setSizeFull();
+		grid.setSizeFull();
+		mainLayout.setSizeFull();
+		Responsive.makeResponsive(mainLayout);
 		addComponent(mainLayout);
 
-		grid.setWidth(1000, Unit.PIXELS);
-		grid.setHeight(500, Unit.PIXELS);
-		grid.setColumns("id", "nombre", "apellidos", "username", "local");
-		//grid.setColumns("id", "local", "tipo", "nombre", "apellidos", "password", "pedidos");
+		grid.setColumns("id", "nombre", "apellidos", "username", "tipo", "local");
+		grid.getColumn("tipo").setCaption("Autoridad");
 
-	
 		filter.setPlaceholder("Filtrar Nombre");
 
-		// Hook logic to components
-		
-		// Replace listing with filtered content when user changes filter
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
 		filter.addValueChangeListener(e -> listCustomers(e.getValue()));
 
-		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
 			editor.editUsuario(e.getValue());
 		});
 
-		// Instantiate and edit new Customer the new button is clicked
 		addNewBtn.addClickListener(e -> editor.editUsuario(new Usuario("", "")));
 
 		// Listen changes made by the editor, refresh data from backend
@@ -81,9 +78,7 @@ public class UsuarioCrud extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
-
 	}
-
 	
 	private void listCustomers(String filterText) {
 		if (StringUtils.isEmpty(filterText)) {
@@ -93,6 +88,5 @@ public class UsuarioCrud extends VerticalLayout implements View {
 			grid.setItems(service.findByNombreStartsWithIgnoreCase(filterText));
 		}
 	}
-	
 	
 }

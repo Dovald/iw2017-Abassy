@@ -12,10 +12,12 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+@SuppressWarnings("deprecation")
 @SpringComponent
 @UIScope
 public class LocalEditor extends VerticalLayout {
@@ -24,12 +26,13 @@ public class LocalEditor extends VerticalLayout {
 
 	private final LocalService service;
 
-	private Local Local;
+	private Local local;
+	
+	private boolean bandera;
 	
 	Binder<Local> binder = new Binder<>(Local.class);
 
-	/* Fields to edit properties in Local entity */
-	Label titulo = new Label("Añadir Local");
+	Label titulo = new Label("Local");
 	TextField direccion = new TextField("Dirección");
 	TextField ciudad = new TextField("Ciudad");
 
@@ -38,37 +41,46 @@ public class LocalEditor extends VerticalLayout {
 	Button cancel = new Button("Cancelar", VaadinIcons.CLOSE_SMALL);
 	Button delete = new Button("Eliminar", VaadinIcons.TRASH);
 	CssLayout actions = new CssLayout(save, cancel, delete);
-
+	
 	@Autowired
 	public LocalEditor(LocalService service) {
 		
 		this.service = service;
 		
-		//buscamos zonas
-		/*Collection<Zona> zonas = (Collection<Zona>) repositoryzona.findAll();
-		ArrayList<String> zonaList = new ArrayList<String>();
-		for(Zona z: zonas){
-			System.out.println(z.getNombre());
-			zonaList.add(z.getNombre());
-		}
-		zona = new NativeSelect<>("Selecciona zona:", zonaList);
-		zona.setEmptySelectionAllowed(false);*/
-		
-		addComponents(direccion, ciudad, actions);
+		addComponents(titulo, direccion, ciudad, actions);
 
-		// bind using naming convention
-		binder.bindInstanceFields(this);
+		binder.forField(direccion)
+		.asRequired("No puede quedar en blanco")
+		.bind(Local::getDireccion, Local::setDireccion);
+		
+		binder.forField(ciudad)
+		.asRequired("No puede quedar en blanco")
+		.bind(Local::getCiudad, Local::setCiudad);
 
 		// Configure and style components
 		setSpacing(true);
-		actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+		actions.setStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
 		// wire action buttons to save, delete and reset
-		save.addClickListener(e -> service.save(Local));
-		delete.addClickListener(e -> service.delete(Local));
-		cancel.addClickListener(e -> editLocal(Local));
+		save.addClickListener(e -> {
+			if(binder.isValid())
+			{
+				bandera = true;
+				Local loc = service.findByDireccionIgnoreCaseAndCiudadIgnoreCase(direccion.getValue(), ciudad.getValue());
+				if(loc != null) {
+					if(loc.getId() != local.getId()) bandera = false;
+				}
+				if(bandera) {
+					service.save(local);
+				}
+				else Notification.show("El local ya existe en ese lugar", Notification.TYPE_WARNING_MESSAGE);
+			}
+			else Notification.show("Revise los campos del formulario", Notification.TYPE_WARNING_MESSAGE);
+		});
+		delete.addClickListener(e -> service.delete(local));
+		cancel.addClickListener(e -> editLocal(local));
 		setVisible(false);
 	}
 
@@ -84,21 +96,19 @@ public class LocalEditor extends VerticalLayout {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			Local = service.findOne(c.getId());
+			local = service.findOne(c.getId());
 		}
 		else {
-			Local = c;
+			local = c;
 		}
 		cancel.setVisible(persisted);
 
-		binder.setBean(Local);
+		binder.setBean(local);
 
 		setVisible(true);
 
 		// A hack to ensure the whole form is visible
 		save.focus();
-		// Select all text in firstName field automatically
-		//firstName.selectAll();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

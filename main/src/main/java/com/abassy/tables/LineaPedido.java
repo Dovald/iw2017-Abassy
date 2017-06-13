@@ -53,7 +53,7 @@ public class LineaPedido implements java.io.Serializable {
 		this.pedido = pedido;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_producto")
 	public Producto getProducto() {
 		return this.producto;

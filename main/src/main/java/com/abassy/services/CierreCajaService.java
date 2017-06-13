@@ -39,7 +39,7 @@ public class CierreCajaService implements CierreCajaServiceInt{
 		  
 		  for(Pedido pedido : pedidos)
 		  {
-		   importe += pedido.getImporte();
+			  if(pedido.getCerrado()) importe += pedido.getImporte();
 		  }
 		  return importe;
 	 }

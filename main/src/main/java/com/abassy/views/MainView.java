@@ -69,9 +69,8 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.server.Responsive;
-import com.vaadin.ui.Alignment;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringViewDisplay;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -79,9 +78,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-
-//import com.abassy.views.LocalCrud;
-import com.abassy.views.*;
 
 /**
  * @author ruizrube
@@ -125,14 +121,12 @@ public class MainView extends VerticalLayout implements ViewDisplay {
 		navigationBar.addComponent(createNavigationButton("Local", LocalCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Zona", ZonaCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Usuarios", UsuarioCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("Pedidos", PedidoCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("Línea de Pedidos", LineaPedidoCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Clientes", ClienteCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Productos", ProductoCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Familia de Productos", FamiliaProductoCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Mesa", MesaCrud.VIEW_NAME));
+		navigationBar.addComponent(createNavigationButton("Pedidos", PedidoCrud.VIEW_NAME));
 		navigationBar.addComponent(createNavigationButton("Cierre de Caja", CierreCajaCrud.VIEW_NAME));
-		//navigationBar.addComponent(createNavigationButton("User Management", UserManagementView.VIEW_NAME));
 		root.addComponent(navigationBar);
 
 		// Creamos el panel

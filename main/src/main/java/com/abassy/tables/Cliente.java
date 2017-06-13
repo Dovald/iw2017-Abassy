@@ -83,5 +83,10 @@ public class Cliente implements java.io.Serializable {
 	public void setPedidos(List<Pedido> pedidos) {
 		this.pedidos = pedidos;
 	}
+	
+	@Override
+	public String toString() {
+		return nombre + " - " + telefono;
+	}
 
 }
